@@ -335,6 +335,7 @@ class ProductManagerController extends Controller
         }
     }
 
+
     public function destroy(Product $product)
     {
         DB::beginTransaction();
@@ -350,6 +351,36 @@ class ProductManagerController extends Controller
             DB::rollBack();
             return response()->json(['success' => false, 'message' => 'Failed to delete product.', 'error' => $e->getMessage()], 500);
         }
+    }
+
+    public function getChildren(Request $request)
+    {
+        $parentId = $request->input('parent_id');
+
+        $children = Category::where('parent_category_id', $parentId)
+            ->select('id', 'title') // Important for JS
+            ->get();
+
+        return response()->json($children);
+    }
+
+    private function buildNestedOptions($categories, $prefix = '')
+    {
+        $options = [];
+
+        foreach ($categories as $category) {
+            $options[] = [
+                'id' => $category->id,
+                'name' => $prefix . $category->name
+            ];
+
+            if ($category->childrenRecursive->isNotEmpty()) {
+                $children = $this->buildNestedOptions($category->childrenRecursive, $prefix . '— ');
+                $options = array_merge($options, $children);
+            }
+        }
+
+        return $options;
     }
 
     public function getSubcategories($id)
