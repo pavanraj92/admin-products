@@ -1,84 +1,76 @@
-# admin-category
+# admin-product
 
-This package allows you to perform CRUD operations for managing categories in the admin panel.
+This package allows you to perform CRUD operations for managing products in the admin panel.
 
 ## Features
 
-- Create new categories
-- View a list of existing categories
-- Update category details
-- Delete categories
-
-## Usage
-
-1. **Create**: Add a new category with name and description.
-2. **Read**: View all categories in a paginated list.
-3. **Update**: Edit category information.
-4. **Delete**: Remove categories that are no longer needed.
-
-## Example Endpoints
-
-| Method | Endpoint           | Description           |
-|--------|-------------------|-----------------------|
-| GET    | `/categories`     | List all categories   |
-| POST   | `/categories`     | Create a new category |
-| GET    | `/categories/{id}`| Get category details  |
-| PUT    | `/categories/{id}`| Update a category     |
-| DELETE | `/categories/{id}`| Delete a category     |
+- Add new products with details like name, price, brand, category, images, etc.
+- View a paginated list of products
+- Edit product details
+- Delete products
+- Upload multiple images per product
+- Assign categories, brands, tags to products
+- Manage product inventory and status
+- SEO metadata support (optional)
 
 ## Requirements
 
-- PHP 8.2+
-- Laravel Framework
-
-## Update `composer.json` file
-
-Add the following to your `composer.json` to use the package from a local path:
-
-```json
-"repositories": [
-    {
-        "type": "vcs",
-        "url": "https://github.com/pavanraj92/admin-categories.git"
-    }
-]
-```
+- PHP >=8.2
+- Laravel Framework >= 12.x
 
 ## Installation
 
-```bash
-composer require admin/category:@dev
+### 1. Add Git Repository to `composer.json`
+
+```json
+"repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/pavanraj92/admin-products.git"
+        }
+]
 ```
+
+### 2. Require the package via Composer
+    ```bash
+    composer require admin/products:@dev
+    ```
+
+### 3. Publish assets
+    ```bash
+    php artisan products:publish --force
+    ```
+---
+
 
 ## Usage
 
-1. Publish the configuration and migration files:
-    ```bash    
-    php artisan categories:publish --force
+1. **Create**: Add a new product with necessary details like name, price, SKU, images, etc.
+2. **Read**: View all products in a searchable, paginated table.
+3. **Update**: Modify product data, images, and attributes.
+4. **Delete**: Soft-delete a product from the system.
 
-    composer dump-autoload
+## Admin Panel Routes
 
-    php artisan migrate
-    ```
-2. Access the Categories manager from your admin dashboard.
+| Method | Endpoint         | Description          |
+| ------ | ---------------- | -------------------- |
+| GET    | `/products`      | List all products    |
+| POST   | `/products`      | Create a new product |
+| GET    | `/products/{id}` | Get product details  |
+| PUT    | `/products/{id}` | Update a product     |
+| DELETE | `/products/{id}` | Delete a product     |
+---
 
-## Example
+## Protecting Admin Routes
+
+Protect your routes using the provided middleware:
 
 ```php
-use Admin\Category\Models\Category;
-
-// Creating a new category
-$category = new Category();
-$category->name = 'Electronics';
-$category->description = 'All electronic items';
-$category->save();
+Route::middleware(['web','admin.auth'])->group(function () {
+    // products routes here
+});
 ```
-
-## Customization
-
-You can customize views, routes, and permissions by editing the package's configuration file.
-
 
 ## License
 
-This package is open-sourced software licensed under the Dotsquares.write code in the readme.md file regarding to the admin/categories manager
+This package is open-sourced software licensed under the MIT license.
