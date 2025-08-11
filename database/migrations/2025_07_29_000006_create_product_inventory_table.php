@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('low_stock_threshold')->nullable();
             $table->boolean('track_quantity')->default(false);
             $table->boolean('allow_backorders')->default(false);
-            $table->enum('stock_status', ['in_stock', 'out_of_stock'])->default('in_stock');
+            $table->enum('stock_status', ['in_stock', 'low_stock', 'out_of_stock'])->default('in_stock');
             $table->timestamps();
             $table->softDeletes();
         });
