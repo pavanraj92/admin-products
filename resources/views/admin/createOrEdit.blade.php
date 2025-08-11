@@ -33,7 +33,21 @@
                             <div class="card mb-4" style="box-shadow: 0 4px 20px rgba(0, 123, 255, 0.15);">
                                 <h4 class="p-3 text-uppercase">Product Information</h4>
                                 <div class="card-body space-y-4">
-
+                                    <div class="form-group">
+                                        <label>Seller Name<span class="text-danger">*</span></label>
+                                        <select name="seller_id" class="form-control select2" required>
+                                            <option value="">Select Seller</option>
+                                            @foreach ($sellers as $seller)
+                                                <option value="{{ $seller->id }}"
+                                                    {{ ($product?->seller_id ?? old('seller_id')) == $seller->id ? 'selected' : '' }}>
+                                                    {{ $seller->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('seller_id')
+                                            <div class="text-danger validation-error">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                     <div class="form-group">
                                         <label for="name" class="form-label">Product Name</label>
                                         <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $product->name ?? '') }}" placeholder="Enter product name">

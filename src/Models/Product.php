@@ -10,6 +10,7 @@ use admin\products\Models\ProductImage;
 use admin\products\Models\ProductInventory;
 use admin\products\Models\ProductPrice;
 use admin\products\Models\ProductShipping;
+use admin\users\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Config;
@@ -33,6 +34,7 @@ class Product extends Model
         'created_at',
     ];
     protected $fillable = [
+        'seller_id',
         'name',
         'slug',
         'short_description',
@@ -112,6 +114,14 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class, 'subcategory_id');
     }
+
+    public function seller()
+    {
+        if (class_exists(\admin\users\Models\User::class)) {
+            return $this->belongsTo(\admin\users\Models\User::class, 'seller_id');
+        }
+    }
+
 
 
     // === Optional: For hierarchical product structure ===

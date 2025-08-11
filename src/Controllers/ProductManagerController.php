@@ -12,6 +12,7 @@ use admin\brands\Models\Brand;
 use admin\categories\Models\Category;
 use admin\products\Models\ProductImage;
 use admin\tags\Models\Tag;
+use admin\users\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -60,11 +61,17 @@ class ProductManagerController extends Controller
             $parentCategories = Category::where('parent_category_id', 0)->pluck('title', 'id');
             $brands = Brand::pluck('name', 'id');
             $tags = Tag::pluck('name', 'id');
+            $sellers = User::join('user_roles', 'users.role_id', '=', 'user_roles.id')
+                    ->where('user_roles.name', 'seller')
+                    ->where('users.status',1)
+                    ->select('users.id', DB::raw("CONCAT(users.first_name, ' ', users.last_name) as name"))
+                    ->get();
             return view('product::admin.createOrEdit', [
                 'categories' => $nestedCategories,
                 'brands' => $brands,
                 'tags' => $tags,
                 'products' => $products,
+                'sellers' => $sellers,
                 'parentCategories' => $parentCategories,
             ]);
             // return view('product::admin.createOrEdit', compact('categories', 'brands', 'tags', 'products', 'nestedCategories'));
@@ -80,6 +87,7 @@ class ProductManagerController extends Controller
             $data = $request->validated();
 
             $product = Product::create([
+                'seller_id' => $data['seller_id'],
                 'name' => $data['name'],
                 'short_description' => $data['short_description'] ?? null,
                 'description' => $data['description'] ?? null,
@@ -192,7 +200,7 @@ class ProductManagerController extends Controller
                 'tags',
                 'categories',
                 'images',
-                'relatedProducts',
+                // 'relatedProducts',
                 'inventory',
                 'prices',
                 'shipping',
@@ -216,6 +224,11 @@ class ProductManagerController extends Controller
             $parentCategories = Category::where('parent_category_id', 0)->pluck('title', 'id');
             $brands = Brand::pluck('name', 'id');
             $tags = Tag::pluck('name', 'id');
+            $sellers = User::join('user_roles', 'users.role_id', '=', 'user_roles.id')
+                    ->where('user_roles.name', 'seller')
+                     ->where('users.status',1)
+                    ->select('users.id', DB::raw("CONCAT(users.first_name, ' ', users.last_name) as name"))
+                    ->get();
 
             return view('product::admin.createOrEdit', [
                 'product' => $product,
@@ -223,6 +236,7 @@ class ProductManagerController extends Controller
                 'brands' => $brands,
                 'tags' => $tags,
                 'parentCategories' => $parentCategories,
+                'sellers' => $sellers,
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to load product: ' . $e->getMessage());
@@ -241,6 +255,7 @@ class ProductManagerController extends Controller
 
             // 1. Update main product info
             $product->update([
+                'seller_id' => $data['seller_id'],
                 'name' => $data['name'],
                 'short_description' => $data['short_description'] ?? null,
                 'description' => $data['description'] ?? null,

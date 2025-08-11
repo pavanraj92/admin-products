@@ -13,6 +13,7 @@ class ProductCreateRequest extends FormRequest
     {
         return [
             // Products table fields
+            'seller_id' => 'required|exists:users,id',
             'name' => 'required|string|max:100',
             'short_description' => 'required|string|max:500',
             'description' => 'nullable|string',
