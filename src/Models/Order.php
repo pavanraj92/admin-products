@@ -89,4 +89,10 @@ class Order extends Model
             ? Config::get('get.admin_page_limit')
             : 10;
     }
+
+    public function getAmountAttribute()
+    {
+        // Sum the total of all order items for this order
+        return $this->orderItems()->sum('total');
+    }
 }

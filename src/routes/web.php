@@ -5,6 +5,7 @@ use admin\products\Controllers\ProductManagerController;
 use admin\products\Controllers\ReturnRefundManagerController;
 use admin\products\Controllers\OrderManagerController;
 use admin\products\Controllers\TransactionManagerController;
+use admin\products\Controllers\ReportManagerController;
 
 Route::name('admin.')->middleware(['web', 'admin.auth'])->group(function () {
     Route::resource('products', ProductManagerController::class);
@@ -22,4 +23,7 @@ Route::name('admin.')->middleware(['web', 'admin.auth'])->group(function () {
 
      // Transactions
     Route::resource('transactions', TransactionManagerController::class);
+
+    // Report
+    Route::get('reports', [ReportManagerController::class, 'index'])->name('reports.index');
 });
