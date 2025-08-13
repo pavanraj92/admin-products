@@ -50,24 +50,53 @@ class DebugProductsCommand extends Command
         
         // Check controller resolution
         $this->info("\n🎯 Controller Resolution:");
-        $controllerClass = 'Modules\\Products\\app\\Http\\Controllers\\Admin\\ProductManagerController';
-        if (class_exists($controllerClass)) {
-            $this->info("✅ Controller class exists: {$controllerClass}");
-        } else {
+       $controllers = [
+            'ProductManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\ProductManagerController',
+            'OrderManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\OrderManagerController',
+            'ReturnRefundManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\ReturnRefundManagerController',
+            'TransactionManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\TransactionManagerController',
+        ];
+
+         foreach ($controllers as $label => $controllerClass) {
+            $this->info("Checking {$label}: {$controllerClass}");
+            if (class_exists($controllerClass)) {
+            $this->info("✅ Controller class found: {$controllerClass}");
+            $reflection = new \ReflectionClass($controllerClass);
+            $this->info("   File: " . $reflection->getFileName());
+            $this->info("   Last modified: " . date('Y-m-d H:i:s', filemtime($reflection->getFileName())));
+            } else {
             $this->error("❌ Controller class not found: {$controllerClass}");
+            }
         }
 
-        // Check model resolution
-        $this->info("\n🏗️  Model Resolution:");
-        $modelClass = 'Modules\\Products\\app\\Models\\Product';
-        if (class_exists($modelClass)) {
-            $this->info("✅ Model class exists: {$modelClass}");
+       // Show current routes
+        $this->info("\n🛣️  Current Routes:");
+        $routes = Route::getRoutes();
+        $productRoutes = [];
+
+        foreach ($routes as $route) {
+            $action = $route->getAction();
+            if (isset($action['controller'])) {
+            if (
+                str_contains($action['controller'], 'ProductManagerController') ||
+                str_contains($action['controller'], 'OrderManagerController')   ||
+                str_contains($action['controller'], 'ReturnRefundManagerController') ||
+                str_contains($action['controller'], 'TransactionManagerController')
+            ) {
+                $productRoutes[] = [
+                'uri' => $route->uri(),
+                'methods' => implode('|', $route->methods()),
+                'controller' => $action['controller'],
+                'name' => $route->getName(),
+                ];
+            }
+            }
+        }
+        
+        if (!empty($productRoutes)) {
+            $this->table(['URI', 'Methods', 'Controller', 'Name'], $productRoutes);
         } else {
-            $this->error("❌ Model class not found: {$modelClass}");
+            $this->warn("No shipping routes found.");
         }
-
-        $this->info("\n📝 Recommendations:");
-        $this->info("- Module files take priority over package files");
-        $this->info("- If module view doesn't exist, it will fallback to package view");
     }
 }

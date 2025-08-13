@@ -16,8 +16,26 @@ class CheckModuleStatusCommand extends Command
 
         // Check if module files exist
         $moduleFiles = [
-            'Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/ProductManagerController.php'),
-            'Model' => base_path('Modules/Products/app/Models/Product.php'),
+            'Product Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/ProductManagerController.php'),
+            'Product Model' => base_path('Modules/Products/app/Models/Product.php'),
+            'Product Category Model' => base_path('Modules/Products/app/Models/ProductCategory.php'),
+            'Product Image Model' => base_path('Modules/Products/app/Models/ProductImage.php'),
+            'Product Inventory Model' => base_path('Modules/Products/app/Models/ProductInventory.php'),
+            'Product Price Model' => base_path('Modules/Products/app/Models/ProductPrice.php'),
+            'Product Shipping Model' => base_path('Modules/Products/app/Models/ProductShipping.php'),
+            'Product Tag Model' => base_path('Modules/Products/app/Models/ProductTag.php'),
+
+            'Order Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/OrderManagerController.php'),
+            'Order Model' => base_path('Modules/Products/app/Models/Order.php'),
+            'Order Address Model' => base_path('Modules/Products/app/Models/OrderAddress.php'),
+            'Order Item Model' => base_path('Modules/Products/app/Models/OrderItem.php'),
+
+            'Return Refund Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/ReturnRefundManagerController.php'),
+            'Return Refund Model' => base_path('Modules/Products/app/Models/ReturnRefundRequest.php'),
+
+            'Transaction Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/TransactionManagerController.php'),
+            'Transaction Model' => base_path('Modules/Products/app/Models/Transaction.php'),
+           
             'Request (Create)' => base_path('Modules/Products/app/Http/Requests/ProductCreateRequest.php'),
             'Request (Update)' => base_path('Modules/Products/app/Http/Requests/ProductUpdateRequest.php'),
             'Routes' => base_path('Modules/Products/routes/web.php'),
@@ -41,20 +59,28 @@ class CheckModuleStatusCommand extends Command
         }
 
         // Check namespace in controller
-        $controllerPath = base_path('Modules/Products/app/Http/Controllers/Admin/ProductManagerController.php');
-        if (File::exists($controllerPath)) {
+        $controllers = [
+            'Product Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/ProductManagerController.php'),
+            'Order Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/OrderManagerController.php'),
+            'Return Refund Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/ReturnRefundManagerController.php'),
+            'Transaction Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/TransactionManagerController.php'),
+        ];
+
+        foreach ($controllers as $name => $controllerPath) {
+            if (File::exists($controllerPath)) {
             $content = File::get($controllerPath);
             if (str_contains($content, 'namespace Modules\Products\app\Http\Controllers\Admin;')) {
-                $this->info("\n✅ Controller namespace: CORRECT");
+                $this->info("\n✅ {$name} namespace: CORRECT");
             } else {
-                $this->error("\n❌ Controller namespace: INCORRECT");
+                $this->error("\n❌ {$name} namespace: INCORRECT");
             }
 
             // Check for test comment
             if (str_contains($content, 'Test comment - this should persist after refresh')) {
-                $this->info("✅ Test comment: FOUND (changes are persisting)");
+                $this->info("✅ Test comment in {$name}: FOUND (changes are persisting)");
             } else {
-                $this->warn("⚠️  Test comment: NOT FOUND");
+                $this->warn("⚠️  Test comment in {$name}: NOT FOUND");
+            }
             }
         }
 
