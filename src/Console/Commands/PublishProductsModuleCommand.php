@@ -43,9 +43,23 @@ class PublishProductsModuleCommand extends Command
         $filesWithNamespaces = [
             // Controllers
             $basePath . '/Controllers/ProductManagerController.php' => base_path('Modules/Products/app/Http/Controllers/Admin/ProductManagerController.php'),
+            $basePath . '/Controllers/OrderManagerController.php' => base_path('Modules/Products/app/Http/Controllers/Admin/OrderManagerController.php'),
+            $basePath . '/Controllers/ReturnRefundManagerController.php' => base_path('Modules/Products/app/Http/Controllers/Admin/ReturnRefundManagerController.php'),
+            $basePath . '/Controllers/TransactionManagerController.php' => base_path('Modules/Products/app/Http/Controllers/Admin/TransactionManagerController.php'),
 
             // Models
             $basePath . '/Models/Product.php' => base_path('Modules/Products/app/Models/Product.php'),
+            $basePath . '/Models/ProductCategory.php' => base_path('Modules/Products/app/Models/ProductCategory.php'),
+            $basePath . '/Models/ProductImage.php' => base_path('Modules/Products/app/Models/ProductImage.php'),
+            $basePath . '/Models/ProductInventory.php' => base_path('Modules/Products/app/Models/ProductInventory.php'),
+            $basePath . '/Models/ProductPrice.php' => base_path('Modules/Products/app/Models/ProductPrice.php'),
+            $basePath . '/Models/ProductShipping.php' => base_path('Modules/Products/app/Models/ProductShipping.php'),
+            $basePath . '/Models/ProductTag.php' => base_path('Modules/Products/app/Models/ProductTag.php'),
+            $basePath . '/Models/Order.php' => base_path('Modules/Products/app/Models/Order.php'),
+            $basePath . '/Models/OrderAddress.php' => base_path('Modules/Products/app/Models/OrderAddress.php'),
+            $basePath . '/Models/OrderItem.php' => base_path('Modules/Products/app/Models/OrderItem.php'),
+            $basePath . '/Models/ReturnRefundRequest.php' => base_path('Modules/Products/app/Models/ReturnRefundRequest.php'),
+            $basePath . '/Models/Transaction.php' => base_path('Modules/Products/app/Models/Transaction.php'),
 
             // Requests
             $basePath . '/Requests/ProductCreateRequest.php' => base_path('Modules/Products/app/Http/Requests/ProductCreateRequest.php'),
@@ -86,6 +100,9 @@ class PublishProductsModuleCommand extends Command
 
             // Class references in routes
             'admin\\products\\Controllers\\ProductManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\ProductManagerController',
+            'admin\\products\\Controllers\\OrderManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\OrderManagerController',
+            'admin\\products\\Controllers\\ReturnRefundManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\ReturnRefundManagerController',
+            'admin\\products\\Controllers\\TransactionManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\TransactionManagerController',
         ];
 
         // Apply transformations
@@ -95,7 +112,66 @@ class PublishProductsModuleCommand extends Command
 
         // Handle specific file types
         if (str_contains($sourceFile, 'Controllers')) {
-            $content = str_replace('use admin\\products\\Models\\Product;', 'use Modules\\Products\\app\\Models\\Product;', $content);
+            $content = str_replace(
+                'use admin\\products\\Models\\Product;',
+                'use Modules\\Products\\app\\Models\\Product;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\\products\\Models\\Order;',
+                'use Modules\\Products\\app\\Models\\Order;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\\products\\Models\\OrderAddress;',
+                'use Modules\\Products\\app\\Models\\OrderAddress;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\\products\\Models\\OrderItem;',
+                'use Modules\\Products\\app\\Models\\OrderItem;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\\products\\Models\\ProductCategory;',
+                'use Modules\\Products\\app\\Models\\ProductCategory;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\\products\\Models\\ProductImage;',
+                'use Modules\\Products\\app\\Models\\ProductImage;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\\products\\Models\\ProductInventory;',
+                'use Modules\\Products\\app\\Models\\ProductInventory;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\\products\\Models\\ProductPrice;',
+                'use Modules\\Products\\app\\Models\\ProductPrice;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\\products\\Models\\ProductShipping;',
+                'use Modules\\Products\\app\\Models\\ProductShipping;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\\products\\Models\\ProductTag;',
+                'use Modules\\Products\\app\\Models\\ProductTag;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\\products\\Models\\ReturnRefundRequest;',
+                'use Modules\\Products\\app\\Models\\ReturnRefundRequest;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\\products\\Models\\Transaction;',
+                'use Modules\\Products\\app\\Models\\Transaction;',
+                $content
+            );
             $content = str_replace('use admin\\products\\Requests\\ProductCreateRequest;', 'use Modules\\Products\\app\\Http\\Requests\\ProductCreateRequest;', $content);
             $content = str_replace('use admin\\products\\Requests\\ProductUpdateRequest;', 'use Modules\\Products\\app\\Http\\Requests\\ProductUpdateRequest;', $content);
         }
