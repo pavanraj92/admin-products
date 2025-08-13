@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ProductInventory extends Model
 {
     use SoftDeletes;
-    protected $table = 'product_inventory';
 
     protected $guarded = [];
 
