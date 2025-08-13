@@ -55,12 +55,13 @@ class ProductManagerController extends Controller
         try {
             $products = [];
             $categories = Category::whereNull('parent_category_id')
+                ->isActive()
                 ->with('childrenRecursive')
                 ->get();
             $nestedCategories = $this->buildNestedOptions($categories);
-            $parentCategories = Category::where('parent_category_id', 0)->pluck('title', 'id');
-            $brands = Brand::pluck('name', 'id');
-            $tags = Tag::pluck('name', 'id');
+            $parentCategories = Category::where('parent_category_id', 0)->isActive()->pluck('title', 'id');
+            $brands = Brand::isActive()->pluck('name', 'id');
+            $tags = Tag::isActive()->pluck('name', 'id');
             $sellers = User::join('user_roles', 'users.role_id', '=', 'user_roles.id')
                     ->where('user_roles.name', 'seller')
                     ->where('users.status',1)
@@ -227,13 +228,14 @@ class ProductManagerController extends Controller
             });
 
             $categories = Category::whereNull('parent_category_id')
+                ->isActive()
                 ->with('childrenRecursive')
                 ->get();
             $nestedCategories = $this->buildNestedOptions($categories);
 
-            $parentCategories = Category::where('parent_category_id', 0)->pluck('title', 'id');
-            $brands = Brand::pluck('name', 'id');
-            $tags = Tag::pluck('name', 'id');
+            $parentCategories = Category::where('parent_category_id', 0)->isActive()->pluck('title', 'id');
+            $brands = Brand::isActive()->pluck('name', 'id');
+            $tags = Tag::isActive()->pluck('name', 'id');
             $sellers = User::join('user_roles', 'users.role_id', '=', 'user_roles.id')
                     ->where('user_roles.name', 'seller')
                      ->where('users.status',1)
@@ -412,6 +414,7 @@ class ProductManagerController extends Controller
         $parentId = $request->input('parent_id');
 
         $children = Category::where('parent_category_id', $parentId)
+            ->isActive()
             ->select('id', 'title') // Important for JS
             ->get();
 
@@ -439,7 +442,7 @@ class ProductManagerController extends Controller
 
     public function getSubcategories($id)
     {
-        $subcategories = Category::where('parent_category_id', $id)->select('id', 'title')->get();
+        $subcategories = Category::where('parent_category_id', $id)->isActive()->select('id', 'title')->get();
 
         return response()->json($subcategories);
     }
@@ -447,6 +450,7 @@ class ProductManagerController extends Controller
     public function getSubcategoriesWithChildren($parentCategoryId)
     {
         $subcategories = Category::where('parent_category_id', $parentCategoryId)
+            ->isActive()
             ->with('children:id,parent_category_id,title')
             ->get(['id', 'title', 'parent_category_id']);
 
