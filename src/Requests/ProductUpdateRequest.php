@@ -42,7 +42,7 @@ class ProductUpdateRequest extends FormRequest
             // Product inventory table fields
             'stock_quantity' => 'required|integer|min:0',
             'low_stock_threshold' => 'nullable|integer|min:0',
-            'stock_status' => 'nullable|in:in_stock,out_of_stock,backordered',
+            'stock_status' => 'nullable|in:in_stock,out_of_stock,low_stock',
 
             // Product shipping table fields
             'weight' => 'nullable|numeric|min:0',
@@ -62,8 +62,8 @@ class ProductUpdateRequest extends FormRequest
             'meta_keywords' => 'nullable|string|max:255',
 
             // product_images fields
-            'gallery_images' => 'nullable|array',
-            'gallery_images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'gallery_image' => 'nullable|array',
+            'gallery_image.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'image_url' => 'nullable|url',
             'alt_text' => 'nullable|string|max:255',
         ];

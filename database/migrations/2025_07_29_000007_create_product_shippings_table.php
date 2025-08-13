@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_shipping', function (Blueprint $table) {
+        Schema::create('product_shippings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->decimal('weight', 8, 2)->nullable();
             $table->decimal('length', 8, 2)->nullable();
             $table->decimal('width', 8, 2)->nullable();
             $table->decimal('height', 8, 2)->nullable();
-            $table->enum('shipping_class', ['no shipping class', 'standard', 'express', 'overnight', 'free shipping'])->default('no shipping class');
-            $table->boolean('requires_shipping')->default(false);
+            $table->enum('shipping_class', ['no_shipping_class', 'standard', 'express', 'overnight', 'free_shipping'])->default('no_shipping_class');
+            $table->boolean('requires_shipping')->nullable()->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_shipping');
+        Schema::dropIfExists('product_shippings');
     }
 };

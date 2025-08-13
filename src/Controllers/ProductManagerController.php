@@ -44,7 +44,7 @@ class ProductManagerController extends Controller
                 ->paginate(Product::getPerPageLimit())
                 ->withQueryString();
 
-            return view('product::admin.index', compact('products'));
+            return view('product::admin.product.index', compact('products'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to load products: ' . $e->getMessage());
         }
@@ -66,7 +66,7 @@ class ProductManagerController extends Controller
                     ->where('users.status',1)
                     ->select('users.id', DB::raw("CONCAT(users.first_name, ' ', users.last_name) as name"))
                     ->get();
-            return view('product::admin.createOrEdit', [
+            return view('product::admin.product.createOrEdit', [
                 'categories' => $nestedCategories,
                 'brands' => $brands,
                 'tags' => $tags,
@@ -85,18 +85,20 @@ class ProductManagerController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->validated();
-
             $product = Product::create([
                 'seller_id' => $data['seller_id'],
                 'name' => $data['name'],
                 'short_description' => $data['short_description'] ?? null,
                 'description' => $data['description'] ?? null,
+                'primary_category_id' => $data['primary_category_id'] ?? null,
                 'brand_id' => $data['brand_id'] ?? null,
                 'sku' => $data['sku'] ?? null,
                 'barcode' => $data['barcode'] ?? null,
                 'status' => $data['status'] ?? 'draft',
                 'is_featured' => $data['is_featured'] ?? false,
                 'published_at' => $data['published_at'] ?? null,
+                'image_url' => $data['image_url'] ?? null,
+                'alt_text' => $data['alt_text'] ?? null,
             ]);
 
             // 1. Create product_category
@@ -154,8 +156,8 @@ class ProductManagerController extends Controller
             }
 
             // 7. Upload Images
-            if ($request->filled('gallery_images')) {
-                $images = json_decode($request->gallery_images, true);
+            if ($request->filled('gallery_image')) {
+                $images = json_decode($request->gallery_image, true);
 
                 foreach ($images as $imageData) {
                     if (!isset($imageData['base64'])) continue;
@@ -175,8 +177,7 @@ class ProductManagerController extends Controller
                         // Save to DB
                         ProductImage::create([
                             'product_id' => $product->id,
-                            'image_url' => $filename,
-                            'alt_text' => $imageData['alt_text'] ?? '', // enhance later
+                            'gallery_image' => $filename,
                         ]);
                     }
                 }
@@ -205,7 +206,7 @@ class ProductManagerController extends Controller
                 'prices',
                 'shipping',
             ]);
-            return view('product::admin.show', compact('product'));
+            return view('product::admin.product.show', compact('product'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to load products: ' . $e->getMessage());
         }
@@ -215,6 +216,15 @@ class ProductManagerController extends Controller
     {
         try {
             $product = Product::with(['prices', 'inventory', 'shipping', 'seo', 'tags', 'images'])->findOrFail($id);
+
+            // Prepare images for Dropzone
+            $existingImages = $product->images->map(function ($image) {
+                return [
+                    'name' => basename($image->gallery_image), // File name
+                    'size' => 0, // If you want, fetch actual file size
+                    'url'  => asset('storage/' . $image->gallery_image), // File URL
+                ];
+            });
 
             $categories = Category::whereNull('parent_category_id')
                 ->with('childrenRecursive')
@@ -230,13 +240,14 @@ class ProductManagerController extends Controller
                     ->select('users.id', DB::raw("CONCAT(users.first_name, ' ', users.last_name) as name"))
                     ->get();
 
-            return view('product::admin.createOrEdit', [
+            return view('product::admin.product.createOrEdit', [
                 'product' => $product,
                 'categories' => $nestedCategories,
                 'brands' => $brands,
                 'tags' => $tags,
                 'parentCategories' => $parentCategories,
                 'sellers' => $sellers,
+                'existingImages' => $existingImages, 
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to load product: ' . $e->getMessage());
@@ -259,14 +270,23 @@ class ProductManagerController extends Controller
                 'name' => $data['name'],
                 'short_description' => $data['short_description'] ?? null,
                 'description' => $data['description'] ?? null,
-                'subcategory_id' => $data['subcategory_id'] ?? null,
+                'primary_category_id' => $data['primary_category_id'] ?? null,
+                // 'subcategory_id' => $data['subcategory_id'] ?? null,
                 'brand_id' => $data['brand_id'] ?? null,
                 'sku' => $data['sku'] ?? null,
                 'barcode' => $data['barcode'] ?? null,
                 'status' => $data['status'] ?? 'draft',
                 'is_featured' => $data['is_featured'] ?? false,
                 'published_at' => $data['published_at'] ?? null,
+                'image_url' => $data['image_url'] ?? null,
+                'alt_text' => $data['alt_text'] ?? null,
             ]);
+
+            if ($request->has('subcategory_ids')) {
+                $request->merge(['product_id' => $product->id]);
+                $product->categories()->sync($request->input('subcategory_ids', []));
+            }
+
 
             // 2. Update pricing
             $product->prices()->updateOrCreate(
@@ -316,28 +336,47 @@ class ProductManagerController extends Controller
             // 6. Update Tags
             $product->tags()->sync($request->input('tag_ids', []));
 
-            // 7. Update Images (optional: remove old ones or append new)
-            if ($request->filled('gallery_images')) {
-                $images = json_decode($request->gallery_images, true);
+           // 7. Update Images
+            if ($request->filled('gallery_image')) {
+                $images = json_decode($request->gallery_image, true);
 
+                // Get current images from DB
+                $existingImages = $product->images()->get();
+
+                // --- Remove old images not in the request ---
+                foreach ($existingImages as $oldImage) {
+                    $stillExists = collect($images)->contains(function ($img) use ($oldImage) {
+                        return isset($img['url']) && Str::endsWith($img['url'], $oldImage->gallery_image);
+                    });
+
+                    if (!$stillExists) {
+                        // Delete file from storage
+                        Storage::disk('public')->delete($oldImage->gallery_image);
+
+                        // Delete DB record
+                        $oldImage->delete();
+                    }
+                }
+
+                // --- Add new images ---
                 foreach ($images as $imageData) {
-                    if (!isset($imageData['base64'])) continue;
+                    if (!empty($imageData['is_new']) && !empty($imageData['base64'])) {
+                        $base64 = $imageData['base64'];
 
-                    $base64 = $imageData['base64'];
+                        if (preg_match('/data:image\/(\w+);base64,/', $base64, $type)) {
+                            $image = substr($base64, strpos($base64, ',') + 1);
+                            $image = base64_decode($image);
+                            $extension = $type[1];
+                            $filename = 'products/' . uniqid() . '.' . $extension;
 
-                    if (preg_match('/data:image\/(\w+);base64,/', $base64, $type)) {
-                        $image = substr($base64, strpos($base64, ',') + 1);
-                        $image = base64_decode($image);
-                        $extension = $type[1];
-                        $filename = 'products/' . uniqid() . '.' . $extension;
+                            Storage::disk('public')->put($filename, $image);
 
-                        Storage::disk('public')->put($filename, $image);
-
-                        ProductImage::create([
-                            'product_id' => $product->id,
-                            'image_url' => $filename,
-                            'alt_text' => $imageData['alt_text'] ?? '',
-                        ]);
+                            ProductImage::create([
+                                'product_id' => $product->id,
+                                'gallery_image' => $filename,
+                                'alt_text' => $imageData['alt_text'] ?? null
+                            ]);
+                        }
                     }
                 }
             }

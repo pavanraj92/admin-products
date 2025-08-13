@@ -40,13 +40,14 @@ class Product extends Model
         'short_description',
         'description',
         'primary_category_id',
-        'subcategory_id',
         'brand_id',
         'sku',
         'barcode',
         'status',
         'is_featured',
         'published_at',
+        'image_url',
+        'alt_text'
     ];
 
     protected static function boot()
@@ -91,12 +92,12 @@ class Product extends Model
     // === Many-to-Many ===
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'product_category');
+        return $this->belongsToMany(Category::class, 'product_categories');
     }
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'product_tag');
+        return $this->belongsToMany(Tag::class, 'product_tags');
     }
 
     // === BelongsTo (Single Foreign Keys) ===

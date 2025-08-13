@@ -8,6 +8,13 @@ return [
         'private' => 'Private',
     ],
 
+    'aryStatusLabel' => [
+        'draft'          => '<label class="badge badge-secondary text-white">Draft</label>',
+        'published'      => '<label class="badge badge-success text-white">Published</label>',
+        'pending_review' => '<label class="badge badge-warning text-dark">Pending Review</label>',
+        'private'        => '<label class="badge badge-dark text-white">Private</label>',
+    ],
+
     'refund_request_type' => [
         'return' => 'Return',
         'refund' => 'Refund',
@@ -68,5 +75,26 @@ return [
         'success' => '<label class="badge badge-success text-white">Success</label>',
         'pending' => '<label class="badge badge-warning text-white">Pending</label>',
         'failed' => '<label class="badge badge-secondary text-white">Failed</label>',
-    ]
+    ],
+
+    'productStockStatus' => [
+        'in_stock' => 'In Stock',
+        'low_stock' => 'Low Stock',
+        'out_of_stock' => 'Out Of Stock',
+    ],
+
+    'productShippingClass' => [
+        'no_shipping_class' => 'No Shipping Class',
+        'standard' => 'Standard',
+        'express' => 'Express',
+        'overnight' => 'Overnight',
+        'free_shipping' => 'Free Shipping',
+    ],
+
+    'productTaxClass' => [
+        'no_tax' => 'No Tax',
+        'standard' => 'Standard',
+        'reduced' => 'Reduced',
+        'zero' => 'Zero',
+    ],
 ];
