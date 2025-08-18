@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('seller_id')->nullable();
 
             // Order details
-            $table->string('order_number')->unique();
+            $table->string('order_number')->nullable();
             $table->dateTime('order_date')->nullable();
             $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])->default('pending');  
 

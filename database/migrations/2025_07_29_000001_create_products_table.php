@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('seller_id')->nullable();
             $table->string('name')->nullable();
-            $table->string('slug')->nullable()->unique();
+            $table->string('slug')->nullable();
             $table->string('short_description')->nullable();
             $table->longText('description')->nullable();
             $table->unsignedBigInteger('primary_category_id')->nullable();
             $table->unsignedBigInteger('brand_id')->nullable();
-            $table->string('sku')->nullable()->unique();
+            $table->string('sku')->nullable();
             $table->string('barcode')->nullable();
             $table->enum('status', ['draft', 'published', 'pending_review', 'private'])->default('draft');
             $table->boolean('is_featured')->default(false);

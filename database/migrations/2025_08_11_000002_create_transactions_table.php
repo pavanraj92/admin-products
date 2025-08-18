@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('payment_gateway'); // stripe, paypal, etc.
-            $table->string('transaction_reference')->nullable()->unique();
+            $table->string('transaction_reference')->nullable();
             $table->decimal('amount', 10, 2);
             $table->string('currency', 10)->default('USD');
             $table->enum('status', ['pending', 'success', 'failed'])->default('pending');
