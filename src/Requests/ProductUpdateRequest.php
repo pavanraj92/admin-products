@@ -3,6 +3,7 @@
 namespace admin\products\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ProductUpdateRequest extends FormRequest
 {
@@ -21,7 +22,14 @@ class ProductUpdateRequest extends FormRequest
             'name' => 'required|string|max:100',
             'short_description' => 'nullable|string|max:500',
             'description' => 'nullable|string',
-            'sku' => 'nullable|string|max:100|unique:products,sku,' . $productId,
+            'sku' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('products', 'sku')
+                    ->whereNull('deleted_at')
+                    ->ignore( $productId), // or $this->route('product')->id
+            ],
             'barcode' => 'nullable|string|max:100',
             'status' => 'nullable|in:draft,published,pending_review,private',
             'is_featured' => 'sometimes|boolean',

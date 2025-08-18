@@ -3,6 +3,7 @@
 namespace admin\products\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ProductCreateRequest extends FormRequest
 {
@@ -17,7 +18,12 @@ class ProductCreateRequest extends FormRequest
             'name' => 'required|string|max:100',
             'short_description' => 'required|string|max:500',
             'description' => 'nullable|string',
-            'sku' => 'required|string|max:100|unique:products,sku',
+            'sku' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('products', 'sku')->whereNull('deleted_at'),
+            ],
             'barcode' => 'nullable|string|max:100',
             'status' => 'nullable|in:draft,published,pending_review,private',
             'is_featured' => 'nullable|boolean',
