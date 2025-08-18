@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('slug')->nullable()->unique();
             $table->string('short_description')->nullable();
             $table->longText('description')->nullable();
-            $table->foreignId('primary_category_id')->nullable()->constrained('categories')->nullOnDelete();
-            $table->foreignId('brand_id')->nullable()->constrained('brands')->nullOnDelete();
+            $table->unsignedBigInteger('primary_category_id')->nullable();
+            $table->unsignedBigInteger('brand_id')->nullable();
             $table->string('sku')->nullable()->unique();
             $table->string('barcode')->nullable();
             $table->enum('status', ['draft', 'published', 'pending_review', 'private'])->default('draft');
