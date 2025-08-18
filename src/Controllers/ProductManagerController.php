@@ -16,9 +16,11 @@ use admin\users\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use admin\admin_auth\Traits\HasSeo;
 
 class ProductManagerController extends Controller
 {
+    use HasSeo;
     protected $imageService;
 
     public function __construct(ImageService $imageService)
@@ -53,6 +55,7 @@ class ProductManagerController extends Controller
     public function create()
     {
         try {
+            $seo = null;
             $products = [];
             $categories = Category::whereNull('parent_category_id')
                 ->isActive()
@@ -74,6 +77,7 @@ class ProductManagerController extends Controller
                 'products' => $products,
                 'sellers' => $sellers,
                 'parentCategories' => $parentCategories,
+                'seo' => $seo,
             ]);
             // return view('product::admin.createOrEdit', compact('categories', 'brands', 'tags', 'products', 'nestedCategories'));
         } catch (\Exception $e) {
@@ -138,17 +142,18 @@ class ProductManagerController extends Controller
             ]);
 
             // 5. Create SEO
-            $product->seo()->create(array_merge(
-                [
-                    'model_name' => 'Product',
-                    'model_record_id' => $product->id,
-                ],
-                [
-                    'meta_title' => $data['meta_title'] ?? null,
-                    'meta_description' => $data['meta_description'] ?? null,
-                    'meta_keywords' => $data['meta_keywords'] ?? null,
-                ]
-            ));
+            $this->saveSeo(Product::class, $product->id, $data);
+            // $product->seo()->create(array_merge(
+            //     [
+            //         'model_name' => 'Product',
+            //         'model_record_id' => $product->id,
+            //     ],
+            //     [
+            //         'meta_title' => $data['meta_title'] ?? null,
+            //         'meta_description' => $data['meta_description'] ?? null,
+            //         'meta_keywords' => $data['meta_keywords'] ?? null,
+            //     ]
+            // ));
 
             // 6.create product_tag
             if ($request->has('tag_ids')) {
@@ -198,6 +203,7 @@ class ProductManagerController extends Controller
     public function show(Product $product)
     {
         try {
+            $seo = $this->getSeo($product);
             $product->load([
                 'tags',
                 'categories',
@@ -207,7 +213,7 @@ class ProductManagerController extends Controller
                 'prices',
                 'shipping',
             ]);
-            return view('product::admin.product.show', compact('product'));
+            return view('product::admin.product.show', compact('product', 'seo'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to load products: ' . $e->getMessage());
         }
@@ -217,7 +223,7 @@ class ProductManagerController extends Controller
     {
         try {
             $product = Product::with(['prices', 'inventory', 'shipping', 'seo', 'tags', 'images'])->findOrFail($id);
-
+            $seo = $this->getSeo($product);
             // Prepare images for Dropzone
             $existingImages = $product->images->map(function ($image) {
                 return [
@@ -250,6 +256,7 @@ class ProductManagerController extends Controller
                 'parentCategories' => $parentCategories,
                 'sellers' => $sellers,
                 'existingImages' => $existingImages, 
+                'seo' => $seo, 
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to load product: ' . $e->getMessage());
@@ -326,14 +333,15 @@ class ProductManagerController extends Controller
             );
 
             // 5. Update SEO
-            $product->seo()->updateOrCreate(
-                ['model_record_id' => $product->id, 'model_name' => 'Product'],
-                [
-                    'meta_title' => $data['meta_title'] ?? null,
-                    'meta_description' => $data['meta_description'] ?? null,
-                    'meta_keywords' => $data['meta_keywords'] ?? null,
-                ]
-            );
+             $this->saveSeo(Product::class, $product->id, $data);
+            // $product->seo()->updateOrCreate(
+            //     ['model_record_id' => $product->id, 'model_name' => 'Product'],
+            //     [
+            //         'meta_title' => $data['meta_title'] ?? null,
+            //         'meta_description' => $data['meta_description'] ?? null,
+            //         'meta_keywords' => $data['meta_keywords'] ?? null,
+            //     ]
+            // );
 
             // 6. Update Tags
             $product->tags()->sync($request->input('tag_ids', []));

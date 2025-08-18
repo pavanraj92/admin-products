@@ -316,23 +316,7 @@
                                     </div>
                                 </div>
                                 <div class="card">
-                                    <div class="card-header bg-primary">
-                                        <h5 class="mb-0 text-white font-bold">SEO Details</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="form-group">
-                                            <label class="font-weight-bold">Meta Title:</label>
-                                            <p>{{ $product->seo?->meta_title ?? 'N/A' }}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="font-weight-bold">Meta Description:</label>
-                                            <p>{{ $product->seo?->meta_description ?? 'N/A' }}</p>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="font-weight-bold">Meta Keywords:</label>
-                                            <p>{{ $product->seo?->meta_keywords ?? 'N/A' }}</p>
-                                        </div>
-                                    </div>
+                                     @include('admin::admin.seo_meta_data.view', ['seo' => $seo])
                                 </div>
                                 <div class="card mt-3">
                                     <div class="card-header bg-primary">

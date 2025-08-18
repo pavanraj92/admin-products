@@ -53,7 +53,7 @@
                                             @enderror
                                         </div>
                                         <div class="form-group">
-                                            <label for="name" class="form-label">Product Name</label>
+                                            <label for="name" class="form-label">Product Name<span class="text-danger">*</span></label>
                                             <input type="text" name="name" id="name" class="form-control"
                                                 value="{{ old('name', $product->name ?? '') }}"
                                                 placeholder="Enter product name">
@@ -63,7 +63,7 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="short_description" class="form-label">Short Description</label>
+                                            <label for="short_description" class="form-label">Short Description<span class="text-danger">*</span></label>
                                             <textarea name="short_description" id="short_description" class="form-control" rows="2"
                                                 placeholder="Brief product description...">{{ old('short_description', $product->short_description ?? '') }}</textarea>
                                             @error('short_description')
@@ -150,7 +150,7 @@
                                                 <label for="tag_ids" class="form-label">Tags</label>
                                                 <select name="tag_ids[]" id="tag_ids" class="form-class select2"
                                                     multiple>
-                                                    <option value="">Choose Tags...</option>
+                                                    <option value="" disabled>Choose Tags...</option>
                                                     @php
                                                         $selectedTagIds = old(
                                                             'tag_ids',
@@ -184,8 +184,8 @@
                                                 <label for="regular_price" class="form-label">Regular Price</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text">$</span>
-                                                    <input type="number" step="0.01" min="0"
-                                                        name="regular_price" id="regular_price" class="form-control"
+                                                    <input type="text"
+                                                        name="regular_price" id="regular_price" class="form-control decimal-only"
                                                         value="{{ old('regular_price', $product->prices->regular_price ?? '') }}"
                                                         placeholder="0.00">
                                                     @error('regular_price')
@@ -197,8 +197,8 @@
                                                 <label for="sale_price" class="form-label">Sale Price</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text">$</span>
-                                                    <input type="number" step="0.01" min="0"
-                                                        name="sale_price" id="sale_price" class="form-control"
+                                                    <input type="text"
+                                                        name="sale_price" id="sale_price" class="form-control decimal-only"
                                                         value="{{ old('sale_price', $product->prices->sale_price ?? '') }}"
                                                         placeholder="0.00">
                                                     @error('sale_price')
@@ -210,8 +210,8 @@
                                                 <label for="cost_price" class="form-label">Cost Price</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text">$</span>
-                                                    <input type="number" step="0.01" min="0"
-                                                        name="cost_price" id="cost_price" class="form-control"
+                                                    <input type="text"
+                                                        name="cost_price" id="cost_price" class="form-control decimal-only"
                                                         value="{{ old('cost_price', $product->prices->cost_price ?? '') }}"
                                                         placeholder="0.00">
                                                     @error('cost_price')
@@ -238,8 +238,8 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="tax_rate" class="form-label">Tax Rate (%)</label>
-                                                <input type="number" step="0.01" min="0" name="tax_rate"
-                                                    id="tax_rate" class="form-control"
+                                                <input type="text" name="tax_rate"
+                                                    id="tax_rate" class="form-control decimal-only"
                                                     value="{{ old('tax_rate', $product->prices->tax_rate ?? '') }}"
                                                     placeholder="0.00">
                                                 @error('tax_rate')
@@ -250,8 +250,8 @@
                                         <div class="row mb-3">
                                             <div class="col-md-4">
                                                 <label for="stock_quantity" class="form-label">Stock Quantity</label>
-                                                <input type="number" min="0" name="stock_quantity"
-                                                    id="stock_quantity" class="form-control"
+                                                <input type="text" name="stock_quantity"
+                                                    id="stock_quantity" class="form-control numbers-only"
                                                     value="{{ old('stock_quantity', $product->inventory->stock_quantity ?? '') }}"
                                                     placeholder="0">
                                                 @error('stock_quantity')
@@ -261,8 +261,8 @@
                                             <div class="col-md-4">
                                                 <label for="low_stock_threshold" class="form-label">Low Stock
                                                     Threshold</label>
-                                                <input type="number" min="0" name="low_stock_threshold"
-                                                    id="low_stock_threshold" class="form-control"
+                                                <input type="text" name="low_stock_threshold"
+                                                    id="low_stock_threshold" class="form-control numbers-only"
                                                     value="{{ old('low_stock_threshold', $product->inventory->low_stock_threshold ?? '') }}"
                                                     placeholder="0">
                                                 @error('low_stock_threshold')
@@ -297,8 +297,8 @@
                                             <div class="col-md-3">
                                                 <label for="weight" class="form-label">Weight</label>
                                                 <div class="input-group">
-                                                    <input type="number" step="0.01" min="0" name="weight"
-                                                        id="weight" class="form-control"
+                                                    <input type="text" name="weight"
+                                                        id="weight" class="form-control decimal-only"
                                                         value="{{ old('weight', $product->shipping->weight ?? '') }}"
                                                         placeholder="0.00">
                                                     <span class="input-group-text">kg</span>
@@ -310,8 +310,8 @@
                                             <div class="col-md-3">
                                                 <label for="length" class="form-label">Length</label>
                                                 <div class="input-group">
-                                                    <input type="number" step="0.01" min="0" name="length"
-                                                        id="length" class="form-control"
+                                                    <input type="text" name="length"
+                                                        id="length" class="form-control decimal-only"
                                                         value="{{ old('length', $product->shipping->length ?? '') }}"
                                                         placeholder="0.00">
                                                     <span class="input-group-text">cm</span>
@@ -323,8 +323,8 @@
                                             <div class="col-md-3">
                                                 <label for="width" class="form-label">Width</label>
                                                 <div class="input-group">
-                                                    <input type="number" step="0.01" min="0" name="width"
-                                                        id="width" class="form-control"
+                                                    <input type="text" name="width"
+                                                        id="width" class="form-control decimal-only"
                                                         value="{{ old('width', $product->shipping->width ?? '') }}"
                                                         placeholder="0.00">
                                                     <span class="input-group-text">cm</span>
@@ -336,8 +336,8 @@
                                             <div class="col-md-3">
                                                 <label for="height" class="form-label">Height</label>
                                                 <div class="input-group">
-                                                    <input type="number" step="0.01" min="0" name="height"
-                                                        id="height" class="form-control"
+                                                    <input type="text" name="height"
+                                                        id="height" class="form-control decimal-only"
                                                         value="{{ old('height', $product->shipping->height ?? '') }}"
                                                         placeholder="0.00">
                                                     <span class="input-group-text">cm</span>
@@ -468,38 +468,7 @@
 
                                 <!-- Start SEO Settings -->
                                 <div class="card mb-4" style="box-shadow: 0 4px 20px rgba(0, 123, 255, 0.15);">
-                                    <h4 class="p-3 text-uppercase">SEO Settings</h4>
-                                    <div class="card-body">
-                                        <div class="form-group mb-3">
-                                            <label for="meta_title" class="form-label">Meta Title</label>
-                                            <input type="text" name="meta_title" id="meta_title" class="form-control"
-                                                value="{{ old('meta_title', $product->seo->meta_title ?? '') }}"
-                                                placeholder="Enter meta title">
-                                            <small class="text-muted">Recommended: 50-60 characters</small>
-                                            @error('meta_title')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <label for="meta_description" class="form-label">Meta Description</label>
-                                            <textarea name="meta_description" id="meta_description" class="form-control" rows="2"
-                                                placeholder="Enter meta description">{{ old('meta_description', $product->seo->meta_description ?? '') }}</textarea>
-                                            <small class="text-muted">Recommended: 150-160 characters</small>
-                                            @error('meta_description')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <label for="meta_keywords" class="form-label">Meta Keywords</label>
-                                            <input type="text" name="meta_keywords" id="meta_keywords"
-                                                class="form-control"
-                                                value="{{ old('meta_keywords', $product->seo->meta_keywords ?? '') }}"
-                                                placeholder="Enter keywords separated by commas">
-                                            @error('meta_keywords')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                                    @include('admin::admin.seo_meta_data.seo', ['seo' => $seo ?? null])
                                 </div>
                                 <!-- End SEO Settings -->
                             </div>
@@ -611,6 +580,10 @@
                 },
                 "Please enter letters only"
             );
+            $.validator.addMethod("decimal", function(value, element) {
+                return this.optional(element) || /^\d+(\.\d{1,2})?$/.test(value);
+            }, "Please enter a valid decimal value (up to 2 decimal places).");
+
             //jquery validation for the form
             $('#productForm').validate({
                 ignore: [],
@@ -622,10 +595,9 @@
                         required: true,
                         minlength: 3,
                         maxlength: 100,
-                        alphabetsOnly: true
                     },
                     short_description: {
-                        required: false,
+                        required: true,
                         minlength: 3,
                         maxlength: 500
                     },
@@ -637,7 +609,7 @@
                         required: true,
                     },
                     sku: {
-                        required: false,
+                        required: true,
                         minlength: 0,
                         maxlength: 100
                     },
@@ -645,6 +617,10 @@
                         required: false,
                         minlength: 0,
                         maxlength: 100
+                    },
+                    regular_price: {
+                        required: true,
+                        decimal: true
                     }
                 },
                 messages: {
@@ -692,6 +668,8 @@
                         error.insertAfter($('.ck-editor')); // show below CKEditor UI
                     } else if (element.hasClass('select2')) {
                         error.insertAfter(element.next('.select2')); // Places error after Select2 UI
+                    } else if (element.closest('.input-group').length) {
+                        error.insertAfter(element.closest('.input-group')); // Place error below input group
                     } else {
                         error.insertAfter(element);
                     }
