@@ -29,7 +29,7 @@ class ProductCreateRequest extends FormRequest
             'is_featured' => 'nullable|boolean',
             'published_at' => 'nullable|date',
             'brand_id' => 'nullable|exists:brands,id',
-            'primary_category_id' => 'nullable|exists:categories,id',
+            'primary_category_id' => 'required|exists:categories,id',
             'subcategory_ids' => 'nullable|array',
             'subcategory_ids.*' => 'exists:categories,id',
 
