@@ -622,7 +622,6 @@
                         required: true,
                         minlength: 3,
                         maxlength: 100,
-                        alphabetsOnly: true
                     },
                     short_description: {
                         required: false,
