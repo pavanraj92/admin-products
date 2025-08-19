@@ -23,30 +23,27 @@
                                     value="{{ request('keyword') }}" placeholder="Enter product name">
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="status">Status</label>
-                                <select name="status" id="status" class="form-control select2">
-                                    @php
-                                    $statuses = ['draft', 'published', 'pending_review', 'private'];
-                                    @endphp
-                                    @foreach($statuses as $status)
-                                    <option value="{{ $status }}" {{ old('status', $product->status ?? '') == $status ? 'selected' : '' }}>
-                                        {{ ucfirst($status) }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-auto mt-1 text-right">
-                            <div class="form-group">
-                                <label>&nbsp;</label>
-                                <div>
-                                    <button type="submit" class="btn btn-primary mt-1">Filter</button>
-                                    <a href="{{ route('admin.products.index') }}" class="btn btn-secondary mt-1">Reset</a>
+                         <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="status">Status</label>
+                                    <select name="status" id="status" class="form-control select2">
+                                        <option value="">All</option>
+                                        @foreach (config('product.constants.aryStatus') as $key => $label)
+                                            <option value="{{ $key }}"
+                                                {{ app('request')->query('status') === (string) $key ? 'selected' : '' }}>
+                                                {{ $label }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
-                        </div>
+                          <div class="col-auto mt-1 text-right">
+                                <div class="form-group">
+                                    <label for="created_at">&nbsp;</label>
+                                    <button type="submit" form="filterForm" class="btn btn-primary mt-4">Filter</button>
+                                    <a href="{{ route('admin.products.index') }}" class="btn btn-secondary mt-4">Reset</a>
+                                </div>
+                            </div>
                     </div>
                 </form>
             </div>

@@ -24,7 +24,15 @@ class Transaction extends Model
         'metadata' => 'array',
     ];
 
-    public $sortable = ['transaction_reference', 'amount', 'status', 'created_at'];
+    public $sortable = ['user', 'payment_gateway','transaction_reference', 'amount', 'status', 'created_at'];
+
+    public function userSortable($query, $direction)
+    {
+         return $query
+        ->leftJoin('users', 'transactions.user_id', '=', 'users.id')
+        ->orderByRaw("CONCAT(users.first_name, ' ', users.last_name) {$direction}")
+        ->select('transactions.*');
+    }
 
     public function scopeFilter($query, array $filters)
     {

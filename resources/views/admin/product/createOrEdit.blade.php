@@ -452,7 +452,7 @@
                                                         <div class="image-thumb position-relative mb-2 p-1"
                                                             style="display:inline-block;">
                                                             <img src="{{ $img['url'] }}" alt="{{ $img['name'] }}"
-                                                                style="max-width:120px; max-height:120px; border:1px solid #eee;">
+                                                                style="max-width:109px; max-height:109px; border:1px solid #eee;">
                                                             <button type="button"
                                                                 class="btn btn-danger btn-sm remove-existing-image"
                                                                 data-id="{{ $img['id'] }}"
@@ -719,7 +719,7 @@
                         reader.onload = function(e) {
                             const html = `
                             <div class="image-container new-image-container" style="position:relative; display:inline-block;">
-                                <img src="${e.target.result}" style="max-width:200px; max-height:120px; margin-right:5px;" />
+                                <img src="${e.target.result}" style="max-width:200px; max-height:109px; margin-right:5px;" />
                                 <button type="button" class="btn btn-danger btn-sm remove-new-image" 
                                     style="position:absolute; top:0; right:0; border-radius:50%;" data-index="${index}">
                                     🗑
@@ -846,7 +846,7 @@
                     reader.onload = function(ev) {
                         $('#galleryPreview').append(`
                 <div class="image-thumb new-image-thumb position-relative mb-2 p-1" style="display:inline-block;">
-                    <img src="${ev.target.result}" alt="${file.name}" style="max-width:120px; max-height:120px; border:1px solid #eee;">
+                    <img src="${ev.target.result}" alt="${file.name}" style="max-width:109px; max-height:109px; border:1px solid #eee;">
                     <button type="button" class="btn btn-danger btn-sm remove-new-image" data-idx="${idx}" style="position:absolute;top:2px;right:2px;">&times;</button>
                 </div>
             `);
