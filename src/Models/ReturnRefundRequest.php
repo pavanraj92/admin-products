@@ -28,9 +28,9 @@ class ReturnRefundRequest extends Model
     ];
 
     protected $sortable = [
-        'title',
-        'parent_category_id',
-        'slug',
+        'user',
+        'product.name',
+        'request_type',
         'status',
         'created_at',
     ];
@@ -38,6 +38,21 @@ class ReturnRefundRequest extends Model
     protected $casts = [
         'refund_processed_at' => 'datetime',
     ];
+
+    public function userSortable($query, $direction)
+    {
+         return $query
+        ->leftJoin('users', 'return_refund_requests.user_id', '=', 'users.id')
+        ->orderByRaw("CONCAT(users.first_name, ' ', users.last_name) {$direction}")
+        ->select('return_refund_requests.*');
+    }
+
+    public function productSortable($query, $direction)
+    {
+        return $query->join('products', 'return_refund_requests.product_id', '=', 'products.id')
+            ->orderBy('products.name', $direction)
+            ->select('return_refund_requests.*');
+    }
 
     public function scopeFilter($query, $keyword)
     {

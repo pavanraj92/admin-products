@@ -74,8 +74,8 @@
                                 <thead class="thead-light">
                                     <tr>
                                         <th scope="col">S. No.</th>
-                                        <th scope="col">@sortablelink('user_id', 'User', [], ['class' => 'text-dark'])</th>
-                                        <th scope="col">@sortablelink('product_id', 'Product', [], ['class' => 'text-dark'])</th>
+                                        <th scope="col">@sortablelink('user', 'User', [], ['class' => 'text-dark'])</th>
+                                        <th scope="col">@sortablelink('product.name', 'Product', [], ['class' => 'text-dark'])</th>
                                         <th scope="col">@sortablelink('request_type', 'Request Type', [], ['class' => 'text-dark'])</th>
                                         <th scope="col">@sortablelink('status', 'Status', [], ['class' => 'text-dark'])</th>
                                         <th scope="col">@sortablelink('created_at', 'Created At', [], ['class' => 'text-dark'])</th>
