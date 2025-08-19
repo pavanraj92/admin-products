@@ -26,4 +26,5 @@ Route::name('admin.')->middleware(['web', 'admin.auth'])->group(function () {
 
     // Report
     Route::get('reports', [ReportManagerController::class, 'index'])->name('reports.index');
+    Route::delete('products/image/{id}', [ProductManagerController::class, 'deleteImage'])->name('products.image.delete');
 });

@@ -439,8 +439,28 @@
                                     <div class="card-body">
                                         <div class="form-group mb-3">
                                             <label class="form-label">Product Gallery</label>
-                                            <div class="dropzone" id="productDropzone"></div>
-                                            <input type="hidden" name="gallery_image" id="gallery_image">
+                                            <input type="file" name="gallery_images[]" id="gallery_images"
+                                                class="form-control d-none" multiple accept="image/*">
+                                            <div id="customGalleryBox" class="custom-upload-box text-center p-4 mb-2"
+                                                style="border:2px dashed #007bff; border-radius:8px; cursor:pointer;">
+                                                <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                                                <div class="text-muted">Click or drag images here to upload</div>
+                                            </div>
+                                            <div id="galleryPreview" class="mt-2 d-flex flex-wrap gap-2">
+                                                @if (isset($existingImages) && count($existingImages))
+                                                    @foreach ($existingImages as $img)
+                                                        <div class="image-thumb position-relative mb-2 p-1"
+                                                            style="display:inline-block;">
+                                                            <img src="{{ $img['url'] }}" alt="{{ $img['name'] }}"
+                                                                style="max-width:120px; max-height:120px; border:1px solid #eee;">
+                                                            <button type="button"
+                                                                class="btn btn-danger btn-sm remove-existing-image"
+                                                                data-id="{{ $img['id'] }}"
+                                                                style="position:absolute;top:2px;right:2px;">&times;</button>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                            </div>
                                         </div>
 
                                         <div class="form-group mb-3">
@@ -489,15 +509,23 @@
 @endsection
 
 @push('styles')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="{{ asset('backend/custom.css') }}">
+    <style>
+        .custom-upload-box {
+            transition: border-color 0.2s;
+        }
+
+        .custom-upload-box.dragover {
+            border-color: #0056b3;
+            background: #f0f8ff;
+        }
+    </style>
 @endpush
 
 @push('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/41.2.1/classic/ckeditor.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -528,7 +556,7 @@
             });
     </script>
 
-    <!-- Dropzone Script -->
+
     <script>
         $(document).ready(function() {
             // Initialize Select2 for any select elements with the class 'select2'
@@ -807,85 +835,110 @@
         });
     </script>
 
-
-    <!-- dropzone script for product images -->
-    <!-- This script handles the image upload functionality using Dropzone.js -->
     <script>
+        $(document).ready(function() {
+            $('#gallery_images').on('change', function(e) {
+                $('#galleryPreview .new-image-thumb').remove();
+                selectedFiles = Array.from(e.target.files); // Store selected files
 
-       Dropzone.autoDiscover = false;
+                selectedFiles.forEach(function(file, idx) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        $('#galleryPreview').append(`
+                <div class="image-thumb new-image-thumb position-relative mb-2 p-1" style="display:inline-block;">
+                    <img src="${ev.target.result}" alt="${file.name}" style="max-width:120px; max-height:120px; border:1px solid #eee;">
+                    <button type="button" class="btn btn-danger btn-sm remove-new-image" data-idx="${idx}" style="position:absolute;top:2px;right:2px;">&times;</button>
+                </div>
+            `);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            });
 
-        var existingImages = @json($existingImages ?? []);
-        let uploadedImages = [];
+            // Remove previewed new image (does not remove from input)
+            $(document).on('click', '.remove-new-image', function() {
+                const idx = $(this).data('idx');
+                selectedFiles.splice(idx, 1); // Remove file from array
+                $(this).closest('.new-image-thumb').remove();
+                updateFileInput();
+            });
+        });
+    </script>
 
-        const myDropzone = new Dropzone("#productDropzone", {
-            url: "#", // No auto upload
-            autoProcessQueue: false,
-            addRemoveLinks: true,
-            parallelUploads: 10,
-            acceptedFiles: ".jpeg,.jpg,.png,.gif",
-            maxFilesize: 5, // in MB
-            init: function() {
-                const dz = this;
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                // Click box triggers file input
+                $('#customGalleryBox').on('click', function() {
+                    $('#gallery_images').trigger('click');
+                });
 
-                // --- Load existing images into Dropzone ---
-                if (Array.isArray(existingImages) && existingImages.length > 0) {
-                    existingImages.forEach(function (file) {
-                        let mockFile = { name: file.name, size: file.size };
-                        
-                        dz.emit("addedfile", mockFile);           // Add the file box
-                        dz.emit("thumbnail", mockFile, file.url); // Set preview from URL
-                        dz.emit("complete", mockFile);            // Mark as done
-                    });
-                }
+                // Drag & drop support
+                $('#customGalleryBox').on('dragover', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).addClass('dragover');
+                });
 
-                // --- When a new file is added ---
-                dz.on("addedfile", function(file) {
-                    if (!file.url) { // Only process new uploads
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            uploadedImages.push({
-                                name: file.name,
-                                type: file.type,
-                                size: file.size,
-                                base64: event.target.result,
-                                url: null,
-                                alt_text: '',
-                                is_new: true,
-                                is_existing: false
-                            });
-                            updateHiddenField();
-                        };
-                        reader.readAsDataURL(file);
+                $('#customGalleryBox').on('dragleave', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).removeClass('dragover');
+                });
+
+                $('#customGalleryBox').on('drop', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).removeClass('dragover');
+                    let files = e.originalEvent.dataTransfer.files;
+                    $('#gallery_images')[0].files = files;
+                    $('#gallery_images').trigger('change');
+                });
+
+                // Remove previewed new image (does not remove from input)
+                $(document).on('click', '.remove-new-image', function() {
+                    $(this).closest('.new-image-thumb').remove();
+                });
+            });
+        </script>
+    @endpush
+
+    <script>
+        $(document).on('click', '.remove-existing-image', function() {
+            var btn = $(this);
+            var imageId = btn.data('id');
+            if (!imageId) return;
+            
+            $.ajax({
+                url: '{{ route('admin.products.image.delete', ':id') }}'.replace(':id', imageId),
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        btn.closest('.image-thumb').remove();
+                    } else {
+                        alert('Failed to delete image.');
                     }
-                });
-
-                // --- When a file is removed ---
-                dz.on("removedfile", function(file) {
-                    uploadedImages = uploadedImages.filter(img => img.name !== file.name);
-                    updateHiddenField();
-                });
-            }
+                },
+                error: function() {
+                    alert('Error deleting image.');
+                }
+            });            
         });
+    </script>
 
-        // Display already uploaded images
-        existingImages.forEach(function(file) {
-            var mockFile = {
-                name: file.name,
-                size: file.size > 0 ? file.size : 12345,
-            };
-            myDropzone.emit("addedfile", mockFile);
-            myDropzone.emit("thumbnail", mockFile, file.url);
-            myDropzone.emit("complete", mockFile);
-        });
-
-        // Function to update hidden input
-        function updateHiddenField() {
-            document.getElementById('gallery_image').value = JSON.stringify(uploadedImages);
+    <script>
+        function updateFileInput() {
+            const dt = new DataTransfer();
+            selectedFiles.forEach(file => dt.items.add(file));
+            document.getElementById('gallery_images').files = dt.files;
         }
 
-        // Ensure hidden field is updated before submit
-        document.getElementById('productForm').addEventListener('submit', function() {
-            updateHiddenField();
+        // Also call updateFileInput before form submit
+        $('#productForm').on('submit', function() {
+            updateFileInput();
         });
     </script>
 @endpush
