@@ -18,6 +18,9 @@ return new class extends Migration
             $table->integer('quantity');
             $table->decimal('price', 10, 2);
             $table->decimal('total', 10, 2); // price * quantity
+            $table->decimal('tax_rate', 10, 2); // price * quantity
+            $table->decimal('discount', 10, 2); // price * quantity
+            $table->decimal('grand_total', 10, 2); // price * quantity
             $table->softDeletes();
             $table->timestamps();
         });

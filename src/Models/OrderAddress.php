@@ -24,6 +24,7 @@ class OrderAddress extends Model
         'shipping_state',
         'shipping_postcode',
         'shipping_country',
+        'same_as_shipping_address',
         'delivery_name',
         'delivery_phone',
         'delivery_address',

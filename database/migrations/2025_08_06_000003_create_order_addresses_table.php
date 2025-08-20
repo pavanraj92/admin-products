@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('shipping_state')->nullable();
             $table->string('shipping_postcode')->nullable();
             $table->string('shipping_country')->nullable();
+            $table->boolean('same_as_shipping_address')->nullable()->default(false);
             $table->string('delivery_name')->nullable();
             $table->string('delivery_phone')->nullable();
             $table->text('delivery_address')->nullable();
