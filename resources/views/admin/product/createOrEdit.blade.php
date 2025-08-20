@@ -82,7 +82,7 @@
 
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label for="primary_category_id" class="form-label">Primary Category</label>
+                                                <label for="primary_category_id" class="form-label">Primary Category<span class="text-danger">*</span></label>
                                                 <select id="primary_category_id" class="form-select select2"
                                                     name="primary_category_id">
                                                     <option value="">Select Category</option>
@@ -128,7 +128,7 @@
 
                                         <div class="row pt-3">
                                             <div class="col-md-6">
-                                                <label for="sku" class="form-label">SKU</label>
+                                                <label for="sku" class="form-label">SKU<span class="text-danger">*</span></label>
                                                 <input type="text" name="sku" id="sku" class="form-control"
                                                     value="{{ old('sku', $product->sku ?? '') }}"
                                                     placeholder="Product SKU">
@@ -181,7 +181,7 @@
                                     <div class="card-body">
                                         <div class="row mb-3">
                                             <div class="col-md-4">
-                                                <label for="regular_price" class="form-label">Regular Price</label>
+                                                <label for="regular_price" class="form-label">Regular Price<span class="text-danger">*</span></label>
                                                 <div class="input-group">
                                                     <span class="input-group-text">$</span>
                                                     <input type="text"
@@ -249,7 +249,7 @@
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-md-4">
-                                                <label for="stock_quantity" class="form-label">Stock Quantity</label>
+                                                <label for="stock_quantity" class="form-label">Stock Quantity<span class="text-danger">*</span></label>
                                                 <input type="text" name="stock_quantity"
                                                     id="stock_quantity" class="form-control numbers-only"
                                                     value="{{ old('stock_quantity', $product->inventory->stock_quantity ?? '') }}"
@@ -558,6 +558,7 @@
 
 
     <script>
+        let selectedFiles = [];
         $(document).ready(function() {
             // Initialize Select2 for any select elements with the class 'select2'
             $('.select2').select2();
@@ -791,47 +792,7 @@
 
             $('#primary_category_id').on('change', function() {
                 loadSubcategories($(this).val(), []);
-            });
-
-            // $('#primary_category_id').on('change', function() {
-            //     let primaryCategoryId = $(this).val();
-            //     let url = "{{ route('admin.categories.nested_subcategories', ':id') }}";
-            //     url = url.replace(':id', primaryCategoryId);
-
-            //     $('#subcategory_id').empty();
-
-            //     if (primaryCategoryId) {
-            //         $.ajax({
-            //             url: url,
-            //             type: 'GET',
-            //             success: function(response) {
-            //                 $('#subcategory_id').append(
-            //                     '<option value="">Select Sub Categories</option>');
-
-            //                 response.forEach(function(subcategory) {
-            //                     // Subcategory
-            //                     $('#subcategory_id').append(
-            //                         `<option value="${subcategory.id}">${subcategory.title}</option>`
-            //                     );
-
-            //                     // Sub-subcategories
-            //                     if (subcategory.children && subcategory.children
-            //                         .length > 0) {
-            //                         subcategory.children.forEach(function(subsub) {
-            //                             $('#subcategory_id').append(
-            //                                 `<option value="${subsub.id}">-- ${subsub.title}</option>`
-            //                             );
-            //                         });
-            //                     }
-            //                 });
-            //             },
-            //             error: function() {
-            //                 $('#subcategory_id').append(
-            //                     '<option value="">Failed to load</option>');
-            //             }
-            //         });
-            //     }
-            // });
+            });           
         });
     </script>
 
