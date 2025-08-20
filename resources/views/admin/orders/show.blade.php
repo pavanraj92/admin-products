@@ -158,7 +158,7 @@
                                         <label class="font-weight-bold">User Name:</label>
                                         <p>
                                             @if (class_exists(\admin\users\Models\User::class))
-                                                {{ $order->user?->full_name ?? 'N/A' }}
+                                                {{ $order->userWithTrashed?->full_name ?? 'N/A' }}
                                             @else
                                                 N/A
                                             @endif
@@ -168,7 +168,7 @@
                                         <label class="font-weight-bold">User Email:</label>
                                         <p>
                                             @if (class_exists(\admin\users\Models\User::class))
-                                                {{ $order->user?->email ?? 'N/A' }}
+                                                {{ $order->userWithTrashed?->email ?? 'N/A' }}
                                             @else
                                                 N/A
                                             @endif
@@ -178,7 +178,47 @@
                                         <label class="font-weight-bold">User Phone:</label>
                                         <p>
                                             @if (class_exists(\admin\users\Models\User::class))
-                                                {{ $order->user?->mobile ?? 'N/A' }}
+                                                {{ $order->userWithTrashed?->mobile ?? 'N/A' }}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                          <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header bg-primary">
+                                    <h5 class="mb-0 text-white font-bold">Seller Details</h5>
+                                </div>
+                                <div class="card-body">
+                                     <div class="form-group">
+                                        <label class="font-weight-bold">Seller Name:</label>
+                                        <p>
+                                            @if (class_exists(\admin\users\Models\User::class))
+                                                {{ $order->sellerWithTrashed?->full_name ?? 'N/A' }}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="font-weight-bold">Seller Email:</label>
+                                        <p>
+                                            @if (class_exists(\admin\users\Models\User::class))
+                                                {{ $order->sellerWithTrashed?->email ?? 'N/A' }}
+                                            @else
+                                                N/A
+                                            @endif
+                                        </p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="font-weight-bold">Seller Phone:</label>
+                                        <p>
+                                            @if (class_exists(\admin\users\Models\User::class))
+                                                {{ $order->sellerWithTrashed?->mobile ?? 'N/A' }}
                                             @else
                                                 N/A
                                             @endif
@@ -214,7 +254,7 @@
                             @forelse($order->orderItems as $index => $item)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
-                                    <td>{{ $item?->product?->name ?? 'N/A' }}</td>
+                                    <td>{{ $item?->productWithTrashed?->name ?? 'N/A' }}</td>
                                     <td>{{ $item?->quantity ?? 0 }}</td>
                                     <td>{{ number_format($item?->price ?? 0, 2) }}</td>
                                     <td>{{ number_format($item?->total ?? 0, 2) }}</td>

@@ -15,12 +15,12 @@ return new class extends Migration
            $table->id();
 
             // Link to order & product
-            $table->unsignedBigInteger('order_id')->nullable();
-            $table->unsignedBigInteger('product_id')->nullable();
-
+            $table->foreignId('order_id')->nullable()->constrained('orders')->cascadeOnDelete();
+            $table->foreignId('product_id')->nullable()->constrained('products')->cascadeOnDelete();
+            
             // Link to user
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->unsignedBigInteger('seller_id')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
+            $table->foreignId('seller_id')->nullable()->constrained('users')->cascadeOnDelete();
 
             // Type of request
             $table->enum('request_type', ['return', 'refund', 'replacement'])->nullable();

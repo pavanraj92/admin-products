@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->string('payment_gateway'); // stripe, paypal, etc.
             $table->string('transaction_reference')->nullable();
             $table->decimal('amount', 10, 2);
@@ -21,6 +21,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'success', 'failed'])->default('pending');
             $table->json('metadata')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('status');
         });

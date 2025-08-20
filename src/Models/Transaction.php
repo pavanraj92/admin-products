@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
 {
-    use Sortable;
+    use Sortable, SoftDeletes;
     protected $fillable = [
         'user_id',
         'payment_gateway',

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
 
             // User placing the order
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->unsignedBigInteger('seller_id')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained('users');
+            $table->foreignId('seller_id')->nullable()->constrained('users');
 
             // Order details
             $table->string('order_number')->nullable();
