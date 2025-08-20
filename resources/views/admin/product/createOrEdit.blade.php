@@ -650,6 +650,10 @@
                     regular_price: {
                         required: true,
                         decimal: true
+                    },
+                    stock_quantity: {
+                        required: true,
+                        decimal: true
                     }
                 },
                 messages: {
@@ -672,6 +676,15 @@
                     },
                     primary_category_id: {
                         required: "Please select category",
+                    },
+                    sku: {
+                        required: "Please enter sku",
+                    },
+                    regular_price: {
+                        required: "Please enter regular price",
+                    },
+                    stock_quantity: {
+                        required: "Please enter stock quantity",
                     },
                 },
                 submitHandler: function(form) {
