@@ -83,6 +83,20 @@ class Order extends Model
         return $this->hasOne(OrderAddress::class);
     }
 
+    public function sellerWithTrashed()
+    {
+        if (class_exists(\admin\users\Models\User::class)) {
+            return $this->belongsTo(\admin\users\Models\User::class, 'seller_id')->withTrashed();
+        }
+    }
+
+    public function userWithTrashed()
+    {
+        if (class_exists(\admin\users\Models\User::class)) {
+            return $this->belongsTo(\admin\users\Models\User::class, 'user_id')->withTrashed();
+        }
+    }
+
     public static function getPerPageLimit(): int
     {
         return Config::has('get.admin_page_limit')

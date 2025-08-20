@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             // Foreign key to orders table
-            $table->unsignedBigInteger('order_id')->nullable();
+            $table->foreignId('order_id')->nullable()->constrained('orders')->cascadeOnDelete();
             // Shipping and delivery addresses
             $table->string('shipping_name')->nullable();
             $table->string('shipping_phone')->nullable();

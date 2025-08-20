@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('order_id')->nullable();
-            $table->unsignedBigInteger('product_id')->nullable();
+            $table->foreignId('order_id')->nullable()->constrained('orders');
+            $table->foreignId('product_id')->nullable()->constrained('products');
             $table->integer('quantity');
             $table->decimal('price', 10, 2);
             $table->decimal('total', 10, 2); // price * quantity

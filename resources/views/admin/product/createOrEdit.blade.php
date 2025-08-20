@@ -752,7 +752,7 @@
                         type: 'GET',
                         success: function(response) {
                             $('#subcategory_id').append(
-                                '<option value="">Select Sub Categories</option>');
+                                '<option value="" disabled>Select Sub Categories</option>');
 
                             response.forEach(function(subcategory) {
                                 let selected = selectedSubcategories.includes(String(subcategory
