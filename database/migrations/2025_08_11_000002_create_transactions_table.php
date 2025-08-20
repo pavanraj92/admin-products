@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
+            $table->foreignId('order_id')->nullable()->constrained('orders')->cascadeOnDelete();
             $table->string('payment_gateway'); // stripe, paypal, etc.
             $table->string('transaction_reference')->nullable();
             $table->decimal('amount', 10, 2);
