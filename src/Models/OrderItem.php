@@ -22,6 +22,9 @@ class OrderItem extends Model
         'quantity',
         'price',
         'total',
+        'tax_rate',
+        'discount',
+        'grand_total',
     ];
 
     public function order()
@@ -32,12 +35,10 @@ class OrderItem extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
-
     }
 
     public function productWithTrashed()
     {
         return $this->belongsTo(Product::class)->withTrashed();
- 
     }
 }

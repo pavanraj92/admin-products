@@ -13,6 +13,7 @@ class Transaction extends Model
     use Sortable, SoftDeletes;
     protected $fillable = [
         'user_id',
+        'order_id',
         'payment_gateway',
         'transaction_reference',
         'amount',
@@ -33,6 +34,13 @@ class Transaction extends Model
         ->leftJoin('users', 'transactions.user_id', '=', 'users.id')
         ->orderByRaw("CONCAT(users.first_name, ' ', users.last_name) {$direction}")
         ->select('transactions.*');
+    }
+
+    public function orderSortable($query, $direction)
+    {
+        return $query->join('orders', 'wishlists.course_id', '=', 'orders.id')
+            ->orderBy('orders.title', $direction)
+            ->select('wishlists.*');
     }
 
     public function scopeFilter($query, array $filters)
@@ -69,6 +77,11 @@ class Transaction extends Model
         if (class_exists(\admin\users\Models\User::class)) {
             return $this->belongsTo(\admin\users\Models\User::class, 'user_id');
         }
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
     }
 
     public static function getPerPageLimit(): int

@@ -248,6 +248,9 @@
                                 <th>Quantity</th>
                                 <th>Price (each)</th>
                                 <th>Total</th>
+                                <th>Tax</th>
+                                <th>Discount</th>
+                                <th>Grand Total</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -258,6 +261,9 @@
                                     <td>{{ $item?->quantity ?? 0 }}</td>
                                     <td>{{ number_format($item?->price ?? 0, 2) }}</td>
                                     <td>{{ number_format($item?->total ?? 0, 2) }}</td>
+                                    <td>{{ number_format($item?->tax_rate ?? 0, 2) }}</td>
+                                    <td>{{ number_format($item?->discount ?? 0, 2) }}</td>
+                                    <td>{{ number_format($item?->grand_total ?? 0, 2) }}</td>
                                 </tr>
                             @empty
                                 <tr>
