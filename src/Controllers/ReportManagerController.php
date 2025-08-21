@@ -13,7 +13,6 @@ class ReportManagerController extends Controller
     public function __construct()
     {
         $this->middleware('admincan_permission:report_manager_list')->only(['index']);
-        $this->middleware('admincan_permission:report_manager_view')->only(['show']);
     }
 
     public function index(Request $request)
