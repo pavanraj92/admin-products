@@ -60,7 +60,7 @@
         <!-- Purchases -->
         <div class="col-md-6">
             <div class="card text-center">
-                <div class="card-header bg-success text-white">Course Purchases</div>
+                <div class="card-header bg-success text-white">Product Purchases</div>
                 <div class="card-body">
                     <h4>Total Orders: {{ $orderCount }}</h4>
                     <p>Total Revenue: <strong>${{ number_format($totalRevenue, 2) }}</strong></p>
