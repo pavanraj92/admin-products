@@ -5,7 +5,6 @@ namespace admin\products\Models;
 use admin\admin_auth\Models\Seo;
 use admin\brands\Models\Brand;
 use admin\categories\Models\Category;
-use admin\tags\Models\Tag;
 use admin\products\Models\ProductImage;
 use admin\products\Models\ProductInventory;
 use admin\products\Models\ProductPrice;
@@ -97,7 +96,9 @@ class Product extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'product_tags');
+        if (class_exists(\admin\tags\Models\Tag::class)) {
+            return $this->belongsToMany(\admin\tags\Models\Tag::class, 'product_tags');
+        }
     }
 
     // === BelongsTo (Single Foreign Keys) ===
