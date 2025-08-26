@@ -96,9 +96,6 @@ class ProductServiceProvider extends ServiceProvider
             // Controllers
             __DIR__ . '/../src/Controllers/ProductManagerController.php' => base_path('Modules/Products/app/Http/Controllers/Admin/ProductManagerController.php'),
             __DIR__ . '/../src/Controllers/OrderManagerController.php' => base_path('Modules/Products/app/Http/Controllers/Admin/OrderManagerController.php'),
-            __DIR__ . '/../src/Controllers/ReportManagerController.php' => base_path('Modules/Products/app/Http/Controllers/Admin/ReportManagerController.php'),
-            __DIR__ . '/../src/Controllers/ReturnRefundManagerController.php' => base_path('Modules/Products/app/Http/Controllers/Admin/ReturnRefundManagerController.php'),
-            __DIR__ . '/../src/Controllers/TransactionManagerController.php' => base_path('Modules/Products/app/Http/Controllers/Admin/TransactionManagerController.php'),
 
             // Models
             __DIR__ . '/../src/Models/Product.php' => base_path('Modules/Products/app/Models/Product.php'),
@@ -111,8 +108,6 @@ class ProductServiceProvider extends ServiceProvider
             __DIR__ . '/../src/Models/ProductPrice.php' => base_path('Modules/Products/app/Models/ProductPrice.php'),
             __DIR__ . '/../src/Models/ProductShipping.php' => base_path('Modules/Products/app/Models/ProductShipping.php'),
             __DIR__ . '/../src/Models/ProductTag.php' => base_path('Modules/Products/app/Models/ProductTag.php'),
-            __DIR__ . '/../src/Models/ReturnRefundRequest.php' => base_path('Modules/Products/app/Models/ReturnRefundRequest.php'),
-            __DIR__ . '/../src/Models/Transaction.php' => base_path('Modules/Products/app/Models/Transaction.php'),
 
             // Requests
             __DIR__ . '/../src/Requests/ProductCreateRequest.php' => base_path('Modules/Products/app/Http/Requests/ProductCreateRequest.php'),
@@ -159,9 +154,6 @@ class ProductServiceProvider extends ServiceProvider
             // Class references in routes
             'admin\\products\\Controllers\\ProductManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\ProductManagerController',
             'admin\\products\\Controllers\\OrderManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\OrderManagerController',
-            'admin\\products\\Controllers\\ReportManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\ReportManagerController',
-            'admin\\products\\Controllers\\ReturnRefundManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\ReturnRefundManagerController',
-            'admin\\products\\Controllers\\TransactionManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\TransactionManagerController',
         ];
 
         // Apply transformations
@@ -239,16 +231,6 @@ class ProductServiceProvider extends ServiceProvider
             'use Modules\\Products\\app\\Models\\ProductTag;',
             $content
         );
-        $content = str_replace(
-            'use admin\\products\\Models\\ReturnRefundRequest;',
-            'use Modules\\Products\\app\\Models\\ReturnRefundRequest;',
-            $content
-        );
-        $content = str_replace(
-            'use admin\\products\\Models\\Transaction;',
-            'use Modules\\Products\\app\\Models\\Transaction;',
-            $content
-        );
 
         $content = str_replace(
             'use admin\\products\\Requests\\ProductCreateRequest;',
@@ -297,21 +279,6 @@ class ProductServiceProvider extends ServiceProvider
         $content = str_replace(
             'admin\\products\\Controllers\\OrderManagerController',
             'Modules\\Products\\app\\Http\\Controllers\\Admin\\OrderManagerController',
-            $content
-        );
-        $content = str_replace(
-            'admin\\products\\Controllers\\ReportManagerController',
-            'Modules\\Products\\app\\Http\\Controllers\\Admin\\ReportManagerController',
-            $content
-        );
-        $content = str_replace(
-            'admin\\products\\Controllers\\ReturnRefundManagerController',
-            'Modules\\Products\\app\\Http\\Controllers\\Admin\\ReturnRefundManagerController',
-            $content
-        );
-        $content = str_replace(
-            'admin\\products\\Controllers\\TransactionManagerController',
-            'Modules\\Products\\app\\Http\\Controllers\\Admin\\TransactionManagerController',
             $content
         );
 
