@@ -102,6 +102,7 @@
                                                     <p>{{ $product->brand?->name ?? 'N/A' }}</p>
                                                 </div>
                                             </div>
+                                            @if (class_exists(\admin\tags\Models\Tag::class))
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label class="font-weight-bold">Tags:</label>
@@ -114,6 +115,7 @@
                                                     </p>
                                                 </div>
                                             </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

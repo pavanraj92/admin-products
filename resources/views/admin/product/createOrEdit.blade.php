@@ -146,6 +146,7 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
+                                            @if (class_exists(\admin\tags\Models\Tag::class))
                                             <div class="col-md-12 pt-3">
                                                 <label for="tag_ids" class="form-label">Tags</label>
                                                 <select name="tag_ids[]" id="tag_ids" class="form-class select2"
@@ -170,6 +171,7 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

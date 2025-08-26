@@ -11,7 +11,6 @@ use admin\admin_auth\Services\ImageService;
 use admin\brands\Models\Brand;
 use admin\categories\Models\Category;
 use admin\products\Models\ProductImage;
-use admin\tags\Models\Tag;
 use admin\users\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -64,7 +63,11 @@ class ProductManagerController extends Controller
             $nestedCategories = $this->buildNestedOptions($categories);
             $parentCategories = Category::where('parent_category_id', 0)->isActive()->pluck('title', 'id');
             $brands = Brand::isActive()->pluck('name', 'id');
-            $tags = Tag::isActive()->pluck('name', 'id');
+            if (class_exists(\admin\tags\Models\Tag::class)) {
+                $tags = \admin\tags\Models\Tag::isActive()->pluck('name', 'id');
+            }else {
+                $tags = collect(); // empty collection
+            }
             $sellers = User::join('user_roles', 'users.role_id', '=', 'user_roles.id')
                 ->where('user_roles.name', 'seller')
                 ->where('users.status', 1)
@@ -181,15 +184,23 @@ class ProductManagerController extends Controller
     {
         try {
             $seo = $this->getSeo($product);
-            $product->load([
-                'tags',
-                'categories',
-                'images',
-                // 'relatedProducts',
-                'inventory',
-                'prices',
-                'shipping',
-            ]);
+            $relations = ['categories', 'images', 'inventory', 'prices', 'shipping'];
+
+            // only add tags if the relation exists
+            if (class_exists(\admin\tags\Models\Tag::class)) {
+                $relations[] = 'tags';
+            }
+
+            $product->load($relations);
+            // $product->load([
+            //     'tags',
+            //     'categories',
+            //     'images',
+            //     // 'relatedProducts',
+            //     'inventory',
+            //     'prices',
+            //     'shipping',
+            // ]);
             return view('product::admin.product.show', compact('product', 'seo'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to load products: ' . $e->getMessage());
@@ -199,7 +210,15 @@ class ProductManagerController extends Controller
     public function edit($id)
     {
         try {
-            $product = Product::with(['prices', 'inventory', 'shipping', 'seo', 'tags', 'images'])->findOrFail($id);
+            $relations = ['prices', 'inventory', 'shipping', 'seo', 'images'];
+
+            // Load tags only if the relation exists
+            if (class_exists(\admin\tags\Models\Tag::class)) {
+                $relations[] = 'tags';
+            }
+
+            $product = Product::with($relations)->findOrFail($id);
+            // $product = Product::with(['prices', 'inventory', 'shipping', 'seo', 'tags', 'images'])->findOrFail($id);
             $seo = $this->getSeo($product);
             // Prepare images for Dropzone
             $existingImages = [];
@@ -219,7 +238,11 @@ class ProductManagerController extends Controller
 
             $parentCategories = Category::where('parent_category_id', 0)->isActive()->pluck('title', 'id');
             $brands = Brand::isActive()->pluck('name', 'id');
-            $tags = Tag::isActive()->pluck('name', 'id');
+            if (class_exists(\admin\tags\Models\Tag::class)) {
+                $tags = \admin\tags\Models\Tag::isActive()->pluck('name', 'id');
+            }else {
+                $tags = collect(); // empty collection
+            }
             $sellers = User::join('user_roles', 'users.role_id', '=', 'user_roles.id')
                 ->where('user_roles.name', 'seller')
                 ->where('users.status', 1)
@@ -323,7 +346,9 @@ class ProductManagerController extends Controller
             // );
 
             // 6. Update Tags
-            $product->tags()->sync($request->input('tag_ids', []));
+            if ($request->has('tag_ids')) {
+                $product->tags()->sync($request->input('tag_ids', []));
+            }
 
 
             // 7. Update Images
