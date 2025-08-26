@@ -53,8 +53,6 @@ class DebugProductsCommand extends Command
        $controllers = [
             'ProductManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\ProductManagerController',
             'OrderManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\OrderManagerController',
-            'ReturnRefundManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\ReturnRefundManagerController',
-            'TransactionManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\TransactionManagerController',
         ];
 
          foreach ($controllers as $label => $controllerClass) {
@@ -80,8 +78,7 @@ class DebugProductsCommand extends Command
             if (
                 str_contains($action['controller'], 'ProductManagerController') ||
                 str_contains($action['controller'], 'OrderManagerController')   ||
-                str_contains($action['controller'], 'ReturnRefundManagerController') ||
-                str_contains($action['controller'], 'TransactionManagerController')
+                str_contains($action['controller'], 'ReturnRefundManagerController')
             ) {
                 $productRoutes[] = [
                 'uri' => $route->uri(),

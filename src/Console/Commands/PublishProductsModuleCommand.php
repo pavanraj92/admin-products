@@ -44,8 +44,6 @@ class PublishProductsModuleCommand extends Command
             // Controllers
             $basePath . '/Controllers/ProductManagerController.php' => base_path('Modules/Products/app/Http/Controllers/Admin/ProductManagerController.php'),
             $basePath . '/Controllers/OrderManagerController.php' => base_path('Modules/Products/app/Http/Controllers/Admin/OrderManagerController.php'),
-            $basePath . '/Controllers/ReturnRefundManagerController.php' => base_path('Modules/Products/app/Http/Controllers/Admin/ReturnRefundManagerController.php'),
-            $basePath . '/Controllers/TransactionManagerController.php' => base_path('Modules/Products/app/Http/Controllers/Admin/TransactionManagerController.php'),
 
             // Models
             $basePath . '/Models/Product.php' => base_path('Modules/Products/app/Models/Product.php'),
@@ -58,8 +56,6 @@ class PublishProductsModuleCommand extends Command
             $basePath . '/Models/Order.php' => base_path('Modules/Products/app/Models/Order.php'),
             $basePath . '/Models/OrderAddress.php' => base_path('Modules/Products/app/Models/OrderAddress.php'),
             $basePath . '/Models/OrderItem.php' => base_path('Modules/Products/app/Models/OrderItem.php'),
-            $basePath . '/Models/ReturnRefundRequest.php' => base_path('Modules/Products/app/Models/ReturnRefundRequest.php'),
-            $basePath . '/Models/Transaction.php' => base_path('Modules/Products/app/Models/Transaction.php'),
 
             // Requests
             $basePath . '/Requests/ProductCreateRequest.php' => base_path('Modules/Products/app/Http/Requests/ProductCreateRequest.php'),
@@ -101,8 +97,6 @@ class PublishProductsModuleCommand extends Command
             // Class references in routes
             'admin\\products\\Controllers\\ProductManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\ProductManagerController',
             'admin\\products\\Controllers\\OrderManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\OrderManagerController',
-            'admin\\products\\Controllers\\ReturnRefundManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\ReturnRefundManagerController',
-            'admin\\products\\Controllers\\TransactionManagerController' => 'Modules\\Products\\app\\Http\\Controllers\\Admin\\TransactionManagerController',
         ];
 
         // Apply transformations
@@ -162,16 +156,7 @@ class PublishProductsModuleCommand extends Command
                 'use Modules\\Products\\app\\Models\\ProductTag;',
                 $content
             );
-            $content = str_replace(
-                'use admin\\products\\Models\\ReturnRefundRequest;',
-                'use Modules\\Products\\app\\Models\\ReturnRefundRequest;',
-                $content
-            );
-            $content = str_replace(
-                'use admin\\products\\Models\\Transaction;',
-                'use Modules\\Products\\app\\Models\\Transaction;',
-                $content
-            );
+           
             $content = str_replace('use admin\\products\\Requests\\ProductCreateRequest;', 'use Modules\\Products\\app\\Http\\Requests\\ProductCreateRequest;', $content);
             $content = str_replace('use admin\\products\\Requests\\ProductUpdateRequest;', 'use Modules\\Products\\app\\Http\\Requests\\ProductUpdateRequest;', $content);
         }

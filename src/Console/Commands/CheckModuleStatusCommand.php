@@ -29,12 +29,6 @@ class CheckModuleStatusCommand extends Command
             'Order Model' => base_path('Modules/Products/app/Models/Order.php'),
             'Order Address Model' => base_path('Modules/Products/app/Models/OrderAddress.php'),
             'Order Item Model' => base_path('Modules/Products/app/Models/OrderItem.php'),
-
-            'Return Refund Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/ReturnRefundManagerController.php'),
-            'Return Refund Model' => base_path('Modules/Products/app/Models/ReturnRefundRequest.php'),
-
-            'Transaction Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/TransactionManagerController.php'),
-            'Transaction Model' => base_path('Modules/Products/app/Models/Transaction.php'),
            
             'Request (Create)' => base_path('Modules/Products/app/Http/Requests/ProductCreateRequest.php'),
             'Request (Update)' => base_path('Modules/Products/app/Http/Requests/ProductUpdateRequest.php'),
@@ -62,8 +56,6 @@ class CheckModuleStatusCommand extends Command
         $controllers = [
             'Product Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/ProductManagerController.php'),
             'Order Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/OrderManagerController.php'),
-            'Return Refund Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/ReturnRefundManagerController.php'),
-            'Transaction Controller' => base_path('Modules/Products/app/Http/Controllers/Admin/TransactionManagerController.php'),
         ];
 
         foreach ($controllers as $name => $controllerPath) {
