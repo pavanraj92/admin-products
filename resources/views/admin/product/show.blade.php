@@ -122,7 +122,7 @@
 
                                 <div class="card mt-3">
                                     <div class="card-header bg-primary">
-                                        <h5 class="mb-0 text-white font-bold">Pricing & Inventory</h5>
+                                        <h5 class="mb-0 text-white font-bold">Pricing  @if(class_exists(\admin\product_inventories\Models\ProductInventory::class))& Inventory @endif</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
@@ -174,27 +174,10 @@
                                                     <p>{{ $product->prices->tax_rate ?? 'N/A' }}</p>
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label class="font-weight-bold">Stock Quantity:</label>
-                                                    <p>{{ $product->inventory->stock_quantity ?? 'N/A' }}</p>
-                                                </div>
-                                            </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label class="font-weight-bold">Low Stock Threshold:</label>
-                                                    <p>{{ $product->inventory->low_stock_threshold ?? 'N/A' }}</p>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label class="font-weight-bold">Stock Status:</label>
-                                                    <p>{!! config('product.constants.productStockStatus.' . ($product->inventory->stock_status ?? ''), 'N/A') !!}</p>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        @if(class_exists(\admin\product_inventories\Models\ProductInventory::class))
+                                            @include('inventory::admin.show', ['product' => $product])
+                                        @endif
                                     </div>
                                 </div>
 

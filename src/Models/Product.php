@@ -6,10 +6,8 @@ use admin\admin_auth\Models\Seo;
 use admin\brands\Models\Brand;
 use admin\categories\Models\Category;
 use admin\products\Models\ProductImage;
-use admin\products\Models\ProductInventory;
 use admin\products\Models\ProductPrice;
 use admin\products\Models\ProductShipping;
-use admin\users\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Config;
@@ -74,7 +72,9 @@ class Product extends Model
 
     public function inventory()
     {
-        return $this->hasOne(ProductInventory::class);
+        if (class_exists(\admin\product_inventories\Models\ProductInventory::class)) {
+            return $this->hasOne(\admin\product_inventories\Models\ProductInventory::class);
+        }
     }
 
     public function shipping()
@@ -123,19 +123,6 @@ class Product extends Model
             return $this->belongsTo(\admin\users\Models\User::class, 'seller_id');
         }
     }
-
-
-
-    // === Optional: For hierarchical product structure ===
-    // public function parent()
-    // {
-    //     return $this->belongsTo(self::class, 'parent_id');
-    // }
-
-    // public function children()
-    // {
-    //     return $this->hasMany(self::class, 'parent_id');
-    // }
 
     public function scopeFilter($query, $name)
     {
