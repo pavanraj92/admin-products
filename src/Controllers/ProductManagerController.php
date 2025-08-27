@@ -55,6 +55,7 @@ class ProductManagerController extends Controller
     {
         try {
             $seo = null;
+            $inventory = null;
             $products = [];
             $categories = Category::whereNull('parent_category_id')
                 ->isActive()
@@ -81,6 +82,7 @@ class ProductManagerController extends Controller
                 'sellers' => $sellers,
                 'parentCategories' => $parentCategories,
                 'seo' => $seo,
+                'inventory' => $inventory,
             ]);
             // return view('product::admin.createOrEdit', compact('categories', 'brands', 'tags', 'products', 'nestedCategories'));
         } catch (\Exception $e) {
@@ -125,13 +127,15 @@ class ProductManagerController extends Controller
                 'tax_rate'      => $data['tax_rate'] ?? null,
             ]);
 
-            // 3. Create inventory
-            $product->inventory()->create([
-                'product_id'         => $product->id,
-                'stock_quantity'     => $data['stock_quantity'] ?? 0,
-                'low_stock_threshold' => $data['low_stock_threshold'] ?? null,
-                'stock_status'       => $data['stock_status'] ?? 'in_stock',
-            ]);
+            if(class_exists(\admin\product_inventories\Models\ProductInventory::class)){ 
+                // 3. Create inventory
+                $product->inventory()->create([
+                    'product_id'         => $product->id,
+                    'stock_quantity'     => $data['stock_quantity'] ?? 0,
+                    'low_stock_threshold' => $data['low_stock_threshold'] ?? null,
+                    'stock_status'       => $data['stock_status'] ?? 'in_stock',
+                ]);
+            }
 
             // 4. Create product shipping
             $product->shipping()->create([
@@ -184,11 +188,15 @@ class ProductManagerController extends Controller
     {
         try {
             $seo = $this->getSeo($product);
-            $relations = ['categories', 'images', 'inventory', 'prices', 'shipping'];
+            $relations = ['categories', 'images', 'prices', 'shipping'];
 
             // only add tags if the relation exists
             if (class_exists(\admin\tags\Models\Tag::class)) {
                 $relations[] = 'tags';
+            }
+
+            if(class_exists(\admin\product_inventories\Models\ProductInventory::class)) {
+                $relations[] = 'inventory';
             }
 
             $product->load($relations);
@@ -210,11 +218,15 @@ class ProductManagerController extends Controller
     public function edit($id)
     {
         try {
-            $relations = ['prices', 'inventory', 'shipping', 'seo', 'images'];
+            $relations = ['prices', 'shipping', 'seo', 'images'];
 
             // Load tags only if the relation exists
             if (class_exists(\admin\tags\Models\Tag::class)) {
                 $relations[] = 'tags';
+            }
+
+            if(class_exists(\admin\product_inventories\Models\ProductInventory::class)) {
+                $relations[] = 'inventory';
             }
 
             $product = Product::with($relations)->findOrFail($id);
@@ -311,15 +323,17 @@ class ProductManagerController extends Controller
                 ]
             );
 
-            // 3. Update inventory
-            $product->inventory()->updateOrCreate(
-                ['product_id' => $product->id],
-                [
-                    'stock_quantity' => $data['stock_quantity'] ?? 0,
-                    'low_stock_threshold' => $data['low_stock_threshold'] ?? null,
-                    'stock_status' => $data['stock_status'] ?? 'in_stock',
-                ]
-            );
+            if(class_exists(\admin\product_inventories\Models\ProductInventory::class)){
+                // 3. Update inventory
+                $product->inventory()->updateOrCreate(
+                    ['product_id' => $product->id],
+                    [
+                        'stock_quantity' => $data['stock_quantity'] ?? 0,
+                        'low_stock_threshold' => $data['low_stock_threshold'] ?? null,
+                        'stock_status' => $data['stock_status'] ?? 'in_stock',
+                    ]
+                );
+            }
 
             // 4. Update shipping
             $product->shipping()->updateOrCreate(

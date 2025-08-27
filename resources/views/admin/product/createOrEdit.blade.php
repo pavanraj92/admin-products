@@ -179,7 +179,7 @@
 
                                 <!-- Pricing & Inventory -->
                                 <div class="card mb-4" style="box-shadow: 0 4px 20px rgba(0, 123, 255, 0.15);">
-                                    <h4 class="p-3 text-uppercase">Pricing & Inventory</h4>
+                                    <h4 class="p-3 text-uppercase">Pricing @if(class_exists(\admin\product_inventories\Models\ProductInventory::class))& Inventory @endif</h4>
                                     <div class="card-body">
                                         <div class="row mb-3">
                                             <div class="col-md-4">
@@ -249,44 +249,9 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="row mb-3">
-                                            <div class="col-md-4">
-                                                <label for="stock_quantity" class="form-label">Stock Quantity<span class="text-danger">*</span></label>
-                                                <input type="text" name="stock_quantity"
-                                                    id="stock_quantity" class="form-control numbers-only"
-                                                    value="{{ old('stock_quantity', $product->inventory->stock_quantity ?? '') }}"
-                                                    placeholder="0">
-                                                @error('stock_quantity')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label for="low_stock_threshold" class="form-label">Low Stock
-                                                    Threshold</label>
-                                                <input type="text" name="low_stock_threshold"
-                                                    id="low_stock_threshold" class="form-control numbers-only"
-                                                    value="{{ old('low_stock_threshold', $product->inventory->low_stock_threshold ?? '') }}"
-                                                    placeholder="0">
-                                                @error('low_stock_threshold')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label for="stock_status" class="form-label">Stock Status</label>
-                                                <select name="stock_status" id="stock_status" class="form-class select2">
-                                                    @php $stockStatuses = config('product.constants.productStockStatus', []); @endphp
-                                                    @foreach ($stockStatuses as $value => $label)
-                                                        <option value="{{ $value }}"
-                                                            {{ old('stock_status', $product->inventory->stock_status ?? 'in_stock') == $value ? 'selected' : '' }}>
-                                                            {{ $label }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                @error('stock_status')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                        @if(class_exists(\admin\product_inventories\Models\ProductInventory::class))
+                                            @include('inventory::admin.createOrEdit', ['product' => $product ?? null])
+                                        @endif
                                     </div>
                                 </div>
                                 <!-- End Pricing & Inventory -->
@@ -652,10 +617,6 @@
                     regular_price: {
                         required: true,
                         decimal: true
-                    },
-                    stock_quantity: {
-                        required: true,
-                        decimal: true
                     }
                 },
                 messages: {
@@ -684,10 +645,7 @@
                     },
                     regular_price: {
                         required: "Please enter regular price",
-                    },
-                    stock_quantity: {
-                        required: "Please enter stock quantity",
-                    },
+                    }
                 },
                 submitHandler: function(form) {
                     // Update textarea before submit

@@ -48,7 +48,7 @@ class ProductUpdateRequest extends FormRequest
             'tax_rate' => 'nullable|numeric|min:0|max:100',
 
             // Product inventory table fields
-            'stock_quantity' => 'required|integer|min:0',
+            'stock_quantity' => 'nullable|integer|min:0',
             'low_stock_threshold' => 'nullable|integer|min:0',
             'stock_status' => 'nullable|in:in_stock,out_of_stock,low_stock',
 
