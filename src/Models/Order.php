@@ -109,4 +109,27 @@ class Order extends Model
         // Sum the total of all order items for this order
         return $this->orderItems()->sum('total');
     }
+
+    public function getGrandTotalAttribute()
+    {
+        $total = $this->orderItems->sum(function($item) {
+            return $item->total; // uses the accessor
+        });
+
+        // Discount (from orders table)
+        if (\Schema::hasColumn($this->getTable(), 'discount_value')) {
+            $discount = $this->discount_value ?? 0;
+        } else {
+            $discount = 0;
+        }
+
+        // Commission (from orders table)
+        if (\Schema::hasColumn($this->getTable(), 'commission_value')) {
+            $commission = ($total - $discount) * ($this->commission_value ?? 0) / 100;
+        } else {
+            $commission = 0;
+        }
+
+        return $total - $discount + $commission;
+    }
 }

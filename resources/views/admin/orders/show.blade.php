@@ -246,28 +246,46 @@
                                         <th>Quantity</th>
                                         <th>Price (each)</th>
                                         <th>Total</th>
-                                        <th>Tax</th>
-                                        <th>Discount</th>
-                                        <th>Grand Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($order->orderItems as $index => $item)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
-                                            <td>{{ $item?->productWithTrashed?->name ?? 'N/A' }}</td>
+                                            <td>{{ $item?->product?->name ?? 'N/A' }}</td>
                                             <td>{{ $item?->quantity ?? 0 }}</td>
-                                            <td>{{ number_format($item?->price ?? 0, 2) }}</td>
-                                            <td>{{ number_format($item?->total ?? 0, 2) }}</td>
-                                            <td>{{ number_format($item?->tax_rate ?? 0, 2) }}</td>
-                                            <td>{{ number_format($item?->discount ?? 0, 2) }}</td>
-                                            <td>{{ number_format($item?->grand_total ?? 0, 2) }}</td>
+                                            <td>{{ config('GET.currency_sign') }}{{ number_format($item?->price ?? 0, 2) }}
+                                            </td>
+                                            <td>{{ config('GET.currency_sign') }}{{ number_format($item?->total ?? 0, 2) }}
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="8" class="text-center">No items found for this order.</td>
+                                            <td colspan="5" class="text-center">No items found for this order.</td>
                                         </tr>
                                     @endforelse
+
+                                    @if ($order->orderItems->isNotEmpty())
+                                        <tr>
+                                            <td colspan="4" class="text-end"><strong>Discount:</strong></td>
+                                            <td>
+                                                {{ config('GET.currency_sign') }}
+                                                {{ \Schema::hasColumn('orders', 'discount_value') ? number_format($order->discount_value ?? 0, 2) : '0.00' }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" class="text-end"><strong>Tax:</strong></td>
+                                            <td>
+                                                {{ config('GET.currency_sign') }}
+                                                {{ \Schema::hasColumn('orders', 'commission_value') ? number_format($order->commission_value ?? 0, 2) : '0.00' }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4" class="text-end"><strong>Grand Total:</strong></td>
+                                            <td>{{ config('GET.currency_sign') }}{{ number_format($order->grand_total ?? 0, 2) }}
+                                            </td>
+                                        </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -275,5 +293,6 @@
                 </div>
             </div>
         </div>
+
     </div>
 @endsection

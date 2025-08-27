@@ -15,12 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->nullable()->constrained('orders');
             $table->foreignId('product_id')->nullable()->constrained('products');
-            $table->integer('quantity');
-            $table->decimal('price', 10, 2);
-            $table->decimal('total', 10, 2); // price * quantity
-            $table->decimal('tax_rate', 10, 2); // price * quantity
-            $table->decimal('discount', 10, 2); // price * quantity
-            $table->decimal('grand_total', 10, 2); // price * quantity
+            $table->integer('quantity')->nullable();
+            $table->decimal('price', 10, 2)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
