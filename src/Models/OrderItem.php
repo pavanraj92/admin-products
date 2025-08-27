@@ -21,10 +21,6 @@ class OrderItem extends Model
         'product_id',       
         'quantity',
         'price',
-        'commission_id  ',
-        'commission_value',
-        'coupon_id',
-        'discount_value',
     ];
 
     public function order()

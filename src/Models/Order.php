@@ -22,6 +22,11 @@ class Order extends Model
         'order_number',
         'order_date',
         'status',
+        'commission_id  ',
+        'commission_value',
+        'commission_type',
+        'coupon_id',
+        'discount_value',
     ];
 
      /**
@@ -110,6 +115,30 @@ class Order extends Model
         return $this->orderItems()->sum('total');
     }
 
+    public function getCommissionAttribute(){
+         $total = $this->orderItems->sum(function($item) {
+            return $item->total; // uses the accessor
+        });
+
+        // Discount (from orders table)
+        if (\Schema::hasColumn($this->getTable(), 'discount_value')) {
+            $discount = $this->discount_value ?? 0;
+        } else {
+            $discount = 0;
+        }
+
+        $commission = 0;
+        if (\Schema::hasColumn($this->getTable(), 'commission_value') && \Schema::hasColumn($this->getTable(), 'commission_type')) {
+            $type = $this->commission_type ?? 'percentage'; // fallback
+            if ($type === 'fixed') {
+                $commission = $this->commission_value ?? 0; // fixed amount
+            } elseif ($type === 'percentage') {
+                $commission = ($total - $discount) * (($this->commission_value ?? 0) / 100); // percentage
+            }
+        }
+        return $commission;
+    }
+
     public function getGrandTotalAttribute()
     {
         $total = $this->orderItems->sum(function($item) {
@@ -123,13 +152,16 @@ class Order extends Model
             $discount = 0;
         }
 
-        // Commission (from orders table)
-        if (\Schema::hasColumn($this->getTable(), 'commission_value')) {
-            $commission = ($total - $discount) * ($this->commission_value ?? 0) / 100;
-        } else {
-            $commission = 0;
+        $commission = 0;
+        if (\Schema::hasColumn($this->getTable(), 'commission_value') && \Schema::hasColumn($this->getTable(), 'commission_type')) {
+            $type = $this->commission_type ?? 'percentage'; // fallback
+            if ($type === 'fixed') {
+                $commission = $this->commission_value ?? 0; // fixed amount
+            } elseif ($type === 'percentage') {
+                $commission = ($total - $discount) * (($this->commission_value ?? 0) / 100); // percentage
+            }
         }
-
+        // Grand total = total - discount + commission
         return $total - $discount + $commission;
     }
 }
