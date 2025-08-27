@@ -278,7 +278,7 @@
                                             <td colspan="4"><strong>Tax:</strong></td>
                                             <td>
                                                 {{ config('GET.currency_sign') }}
-                                                {{ \Schema::hasColumn('orders', 'commission_value') ? number_format($order->commission_value ?? 0, 2) : '0.00' }}
+                                                {{ \Schema::hasColumn('orders', 'commission_value') ? number_format($order->commission ?? 0, 2) : '0.00' }}
                                             </td>
                                         </tr>
                                         <tr>
