@@ -264,29 +264,30 @@
                                             <td colspan="5" class="text-center">No items found for this order.</td>
                                         </tr>
                                     @endforelse
-
-                                    @if ($order->orderItems->isNotEmpty())
+                                </tbody>
+                                <tfoot>
+                                      @if ($order->orderItems->isNotEmpty())
                                         <tr>
-                                            <td colspan="4" class="text-end"><strong>Discount:</strong></td>
+                                            <td colspan="4"><strong>Discount:</strong></td>
                                             <td>
                                                 {{ config('GET.currency_sign') }}
                                                 {{ \Schema::hasColumn('orders', 'discount_value') ? number_format($order->discount_value ?? 0, 2) : '0.00' }}
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4" class="text-end"><strong>Tax:</strong></td>
+                                            <td colspan="4"><strong>Tax:</strong></td>
                                             <td>
                                                 {{ config('GET.currency_sign') }}
                                                 {{ \Schema::hasColumn('orders', 'commission_value') ? number_format($order->commission_value ?? 0, 2) : '0.00' }}
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4" class="text-end"><strong>Grand Total:</strong></td>
-                                            <td>{{ config('GET.currency_sign') }}{{ number_format($order->grand_total ?? 0, 2) }}
+                                            <td colspan="4"><strong>Grand Total:</strong></td>
+                                            <td><strong>{{ config('GET.currency_sign') }}{{ number_format($order->grand_total ?? 0, 2) }}</strong>
                                             </td>
                                         </tr>
                                     @endif
-                                </tbody>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
