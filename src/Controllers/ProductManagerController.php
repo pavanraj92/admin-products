@@ -62,7 +62,11 @@ class ProductManagerController extends Controller
                 ->with('childrenRecursive')
                 ->get();
             $nestedCategories = $this->buildNestedOptions($categories);
-            $parentCategories = Category::where('parent_category_id', 0)->isActive()->pluck('title', 'id');
+            $parentCategories = Category::where('parent_category_id', 0)
+            ->orWhereNull('parent_category_id')
+            ->isActive()
+            ->pluck('title', 'id');
+
             $brands = Brand::isActive()->pluck('name', 'id');
             if (class_exists(\admin\tags\Models\Tag::class)) {
                 $tags = \admin\tags\Models\Tag::isActive()->pluck('name', 'id');
@@ -248,7 +252,10 @@ class ProductManagerController extends Controller
                 ->get();
             $nestedCategories = $this->buildNestedOptions($categories);
 
-            $parentCategories = Category::where('parent_category_id', 0)->isActive()->pluck('title', 'id');
+            $parentCategories = Category::where('parent_category_id', 0)
+            ->orWhereNull('parent_category_id')
+            ->isActive()
+            ->pluck('title', 'id');
             $brands = Brand::isActive()->pluck('name', 'id');
             if (class_exists(\admin\tags\Models\Tag::class)) {
                 $tags = \admin\tags\Models\Tag::isActive()->pluck('name', 'id');
