@@ -4,7 +4,6 @@ namespace Admin\Products\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use admin\products\Models\Product;
 use Carbon\Carbon;
 
 class ProductSeeder extends Seeder
@@ -118,7 +117,8 @@ class ProductSeeder extends Seeder
         foreach ($products as $data) {
             DB::beginTransaction();
             try {
-                $product = Product::updateOrCreate(
+                // Insert or update product
+                $productId = DB::table('products')->updateOrInsert(
                     ['sku' => $data['sku']],
                     [
                         'seller_id' => $data['seller_id'],
@@ -131,42 +131,69 @@ class ProductSeeder extends Seeder
                         'barcode' => $data['barcode'] ?? null,
                         'status' => $data['status'] ?? 'draft',
                         'published_at' => $data['published_at'] ?? null,
+                        'updated_at' => $now,
+                        'created_at' => $now,
                     ]
                 );
 
-                // Categories
+                // Get actual product id (updateOrInsert doesn’t return ID, so fetch)
+                $product = DB::table('products')->where('sku', $data['sku'])->first();
+                if (!$product) {
+                    throw new \Exception("Product not found after insert: " . $data['name']);
+                }
+                $productId = $product->id;
+
+                // Categories (pivot table: category_product ?)
                 if (!empty($data['category_ids'])) {
-                    $product->categories()->sync($data['category_ids']);
+                    foreach ($data['category_ids'] as $catId) {
+                        DB::table('product_categories')->updateOrInsert(
+                            ['product_id' => $productId, 'category_id' => $catId],
+                            ['product_id' => $productId, 'category_id' => $catId]
+                        );
+                    }
                 }
 
-                // Prices
+                // Prices (assuming product_prices table)
                 if (!empty($data['prices'])) {
-                    $product->prices()->updateOrCreate(
-                        ['product_id' => $product->id],
-                        $data['prices'] + ['product_id' => $product->id]
+                    DB::table('product_prices')->updateOrInsert(
+                        ['product_id' => $productId],
+                        $data['prices'] + [
+                            'product_id' => $productId,
+                            'updated_at' => $now,
+                            'created_at' => $now,
+                        ]
                     );
                 }
 
-                // Shipping
+                // Shipping (assuming product_shipping table)
                 if (!empty($data['shipping'])) {
-                    $product->shipping()->updateOrCreate(
-                        ['product_id' => $product->id],
-                        $data['shipping'] + ['product_id' => $product->id]
+                    DB::table('product_shippings')->updateOrInsert(
+                        ['product_id' => $productId],
+                        $data['shipping'] + [
+                            'product_id' => $productId,
+                            'updated_at' => $now,
+                            'created_at' => $now,
+                        ]
                     );
                 }
 
-                // SEO
+                // SEO (assuming seo_meta table)
                 if (!empty($data['seo'])) {
-                    $product->seo()->updateOrCreate(
-                        ['model_record_id' => $product->id],
-                        array_merge(['model_name' => Product::class, 'model_record_id' => $product->id], $data['seo'])
+                    DB::table('seo_meta')->updateOrInsert(
+                        ['model_name' => 'Admin\Products\Models\Product', 'model_record_id' => $productId],
+                        $data['seo'] + [
+                            'model_name' => 'Admin\Products\Models\Product',
+                            'model_record_id' => $productId,
+                            'updated_at' => $now,
+                            'created_at' => $now,
+                        ]
                     );
                 }
 
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollBack();
-                $this->command->error('Failed seeding product '.$data['name'].': '.$e->getMessage());
+                $this->command->error('Failed seeding product ' . $data['name'] . ': ' . $e->getMessage());
             }
         }
     }
