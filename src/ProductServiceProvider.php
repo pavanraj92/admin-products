@@ -19,7 +19,13 @@ class ProductServiceProvider extends ServiceProvider
             __DIR__ . '/../resources/views'      // Package views as fallback
         ], 'product');
 
-        $this->mergeConfigFrom(__DIR__ . '/../config/product.php', 'product.constants');
+        // Load published module config first (if it exists), then fallback to package config
+        if (file_exists(base_path('Modules/Products/config/product.php'))) {
+            $this->mergeConfigFrom(base_path('Modules/Products/config/product.php'), 'product.constants');
+        } else {
+            // Fallback to package config if published config doesn't exist
+            $this->mergeConfigFrom(__DIR__ . '/../config/product.php', 'product.constants');
+        }
 
         // Also register module views with a specific namespace for explicit usage
         if (is_dir(base_path('Modules/Products/resources/views'))) {
@@ -29,11 +35,6 @@ class ProductServiceProvider extends ServiceProvider
         // Also load migrations from published module if they exist
         if (is_dir(base_path('Modules/Products/database/migrations'))) {
             $this->loadMigrationsFrom(base_path('Modules/Products/database/migrations'));
-        }
-
-        // Also merge config from published module if it exists
-        if (file_exists(base_path('Modules/Products/config/products.php'))) {
-            $this->mergeConfigFrom(base_path('Modules/Products/config/products.php'), 'product.constants');
         }
 
         // Only publish automatically during package installation, not on every request
