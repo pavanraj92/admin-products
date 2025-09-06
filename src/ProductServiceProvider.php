@@ -243,6 +243,30 @@ class ProductServiceProvider extends ServiceProvider
             'use Modules\\Products\\app\\Http\\Requests\\ProductUpdateRequest;',
             $content
         );
+        
+        $content = str_replace(
+            'use admin\admin_auth\Models\Seo;',
+            'use Modules\\AdminAuth\\app\\Models\\Seo;',
+            $content
+        );
+        
+        $content = str_replace(
+            'use admin\categories\Models\Category;',
+            'use Modules\\Categories\\app\\Models\\Category;',
+            $content
+        );
+
+        $content = str_replace(
+            'use admin\brands\Models\Brand;',
+            'use Modules\\Brands\\app\\Models\\Brand;',
+            $content
+        );
+
+        $content = str_replace(
+            'use admin\admin_auth\Traits\HasSeo;',
+            'use Modules\\AdminAuth\\app\\Traits\\HasSeo;',
+            $content
+        );
 
         return $content;
     }
@@ -253,6 +277,26 @@ class ProductServiceProvider extends ServiceProvider
     protected function transformModelNamespaces($content)
     {
         // Any model-specific transformations
+        $content = str_replace(
+            'use admin\admin_auth\Models\Seo;',
+            'use Modules\\AdminAuth\\app\\Models\\Seo;',
+            $content
+        );
+        $content = str_replace(
+            'use admin\categories\Models\Category;',
+            'use Modules\\Categories\\app\\Models\\Category;',
+            $content
+        );
+        $content = str_replace(
+            'use admin\brands\Models\Brand;',
+            'use Modules\\Brands\\app\\Models\\Brand;',
+            $content
+        );
+        $content = str_replace(
+            'use admin\users\Models\User;',
+            'use Modules\\Users\\app\\Models\\User;',
+            $content
+        );
         return $content;
     }
 

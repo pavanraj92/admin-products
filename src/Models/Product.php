@@ -5,6 +5,7 @@ namespace admin\products\Models;
 use admin\admin_auth\Models\Seo;
 use admin\brands\Models\Brand;
 use admin\categories\Models\Category;
+use admin\users\Models\User;
 use admin\products\Models\ProductImage;
 use admin\products\Models\ProductPrice;
 use admin\products\Models\ProductShipping;
@@ -119,9 +120,7 @@ class Product extends Model
 
     public function seller()
     {
-        if (class_exists(\admin\users\Models\User::class)) {
-            return $this->belongsTo(\admin\users\Models\User::class, 'seller_id');
-        }
+        return $this->belongsTo(User::class, 'seller_id');
     }
 
     public function scopeFilter($query, $name)
