@@ -156,9 +156,55 @@ class PublishProductsModuleCommand extends Command
                 'use Modules\\Products\\app\\Models\\ProductTag;',
                 $content
             );
+            $content = str_replace(
+                'use admin\admin_auth\Models\Seo;',
+                'use Modules\\AdminAuth\\app\\Models\\Seo;',
+                $content
+            );
+
+            $content = str_replace(
+                'use admin\categories\Models\Category;',
+                'use Modules\\Categories\\app\\Models\\Category;',
+                $content
+            );
+
+            $content = str_replace(
+                'use admin\brands\Models\Brand;',
+                'use Modules\\Brands\\app\\Models\\Brand;',
+                $content
+            );
+
+            $content = str_replace(
+                'use admin\admin_auth\Traits\HasSeo;',
+                'use Modules\\AdminAuth\\app\\Traits\\HasSeo;',
+                $content
+            );
            
             $content = str_replace('use admin\\products\\Requests\\ProductCreateRequest;', 'use Modules\\Products\\app\\Http\\Requests\\ProductCreateRequest;', $content);
             $content = str_replace('use admin\\products\\Requests\\ProductUpdateRequest;', 'use Modules\\Products\\app\\Http\\Requests\\ProductUpdateRequest;', $content);
+            
+        } elseif (str_contains($sourceFile, 'Models')) {
+            // Transform admin_auth namespaces in models
+            $content = str_replace(
+                'use admin\admin_auth\Models\Seo;',
+                'use Modules\\AdminAuth\\app\\Models\\Seo;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\categories\Models\Category;',
+                'use Modules\\Categories\\app\\Models\\Category;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\brands\Models\Brand;',
+                'use Modules\\Brands\\app\\Models\\Brand;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\users\Models\User;',
+                'use Modules\\Users\\app\\Models\\User;',
+                $content
+            );
         }
 
         return $content;
