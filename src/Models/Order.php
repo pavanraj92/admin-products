@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Config;
 use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use admin\users\Models\User;
 
 class Order extends Model
 {
@@ -71,16 +72,12 @@ class Order extends Model
 
     public function user()
     {
-        if (class_exists(\admin\users\Models\User::class)) {
-            return $this->belongsTo(\admin\users\Models\User::class);
-        }
+        return $this->belongsTo(User::class);
     }
 
     public function seller()
     {
-        if (class_exists(\admin\users\Models\User::class)) {
-            return $this->belongsTo(\admin\users\Models\User::class, 'seller_id');
-        }
+        return $this->belongsTo(User::class, 'seller_id');
     }
 
     public function orderAddress()
@@ -90,16 +87,12 @@ class Order extends Model
 
     public function sellerWithTrashed()
     {
-        if (class_exists(\admin\users\Models\User::class)) {
-            return $this->belongsTo(\admin\users\Models\User::class, 'seller_id')->withTrashed();
-        }
+        return $this->belongsTo(User::class, 'seller_id')->withTrashed();
     }
 
     public function userWithTrashed()
     {
-        if (class_exists(\admin\users\Models\User::class)) {
-            return $this->belongsTo(\admin\users\Models\User::class, 'user_id')->withTrashed();
-        }
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
     }
 
     public static function getPerPageLimit(): int
