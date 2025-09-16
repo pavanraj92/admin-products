@@ -117,9 +117,8 @@
                 }
             },
             submitHandler: function(form) {
-                if (ckEditorInstance) {
-                    $('#description').val(ckEditorInstance.getData());
-                }
+                $('#description').val($('#description').summernote('code'));
+
                 const $btn = $('#saveBtn');
                 if ($btn.text().trim().toLowerCase() === 'update') {
                     $btn.prop('disabled', true).text('Updating...');
@@ -133,7 +132,7 @@
             errorPlacement: function(error, element) {
                 $('.validation-error').hide();
                 if (element.attr("id") === "description") {
-                    error.insertAfter($('.ck-editor'));
+                    error.insertAfter($('.note-editor'));
                 } else if (element.hasClass('select2')) {
                     error.insertAfter(element.next('.select2'));
                 } else if (element.closest('.input-group').length) {
@@ -173,4 +172,3 @@
         });
     });
 </script>
-

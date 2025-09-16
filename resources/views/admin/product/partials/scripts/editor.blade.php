@@ -1,22 +1,25 @@
 <script>
-    let ckEditorInstance;
-    ClassicEditor
-        .create(document.querySelector('#description'))
-        .then(editor => {
-            ckEditorInstance = editor;
-
-            editor.ui.view.editable.element.style.minHeight = '250px';
-            editor.ui.view.editable.element.style.maxHeight = '250px';
-            editor.ui.view.editable.element.style.overflowY = 'auto';
-
-            editor.model.document.on('change:data', () => {
-                const descriptionVal = editor.getData();
-                $('#description').val(descriptionVal);
-                $('#description').trigger('keyup');
-            });
-        })
-        .catch(error => {
-            console.error(error);
+    $(document).ready(function() {
+        $('#description').summernote({
+            height: 250, // ✅ editor height
+            minHeight: 250,
+            maxHeight: 250,
+            toolbar: [
+                // ✨ Add "code view" toggle button
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['link', 'picture']],
+                ['view', ['codeview']] // ✅ source code button
+            ],
+            callbacks: {
+                onChange: function(contents, $editable) {
+                    // keep textarea updated
+                    $('#description').val(contents);
+                    // trigger validation if needed
+                    $('#description').trigger('keyup');
+                }
+            }
         });
+    });
 </script>
-
