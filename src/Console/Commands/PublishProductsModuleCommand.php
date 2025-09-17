@@ -29,6 +29,8 @@ class PublishProductsModuleCommand extends Command
             '--force' => $this->option('force')
         ]);
 
+        $this->transformBladeFilesNamespaces();
+        
         // Update composer autoload
         $this->updateComposerAutoload();
 
@@ -249,6 +251,49 @@ class PublishProductsModuleCommand extends Command
 
         return $content;
     }
+
+    protected function transformBladeFilesNamespaces()
+    {
+        $pathsToScan = [
+            base_path('Modules/Products/resources/views'),
+            resource_path('views/admin/product'),
+        ];
+
+        foreach ($pathsToScan as $path) {
+            if (File::exists($path)) {
+                $this->transformBladeNamespacesInDirectory($path);
+            }
+        }
+    }
+
+    protected function transformBladeNamespacesInDirectory($directory)
+    {
+        $files = File::allFiles($directory);
+
+        foreach ($files as $file) {
+            // Process only Blade/PHP view files
+            if ($file->getExtension() !== 'php') {
+                continue;
+            }
+
+            $content = File::get($file->getRealPath());
+
+            $replacements = [
+                'admin\\products\\Models\\Product' => 'Modules\\Products\\app\\Models\\Product',
+            ];
+
+            $updated = $content;
+            foreach ($replacements as $search => $replace) {
+                $updated = str_replace($search, $replace, $updated);
+            }
+
+            if ($updated !== $content) {
+                File::put($file->getRealPath(), $updated);
+                $this->info('Updated blade namespace: ' . $file->getRelativePathname());
+            }
+        }
+    }
+
 
     protected function updateComposerAutoload()
     {
