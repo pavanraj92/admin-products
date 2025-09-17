@@ -12,6 +12,7 @@ use admin\brands\Models\Brand;
 use admin\categories\Models\Category;
 use admin\products\Models\ProductImage;
 use admin\users\Models\User;
+use admin\tags\Models\Tag;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -68,8 +69,8 @@ class ProductManagerController extends Controller
             ->pluck('title', 'id');
 
             $brands = Brand::isActive()->pluck('name', 'id');
-            if (class_exists(\admin\tags\Models\Tag::class)) {
-                $tags = \admin\tags\Models\Tag::isActive()->pluck('name', 'id');
+            if (Product::isModuleInstalled('tags')) {
+                $tags = Tag::isActive()->pluck('name', 'id');
             }else {
                 $tags = collect(); // empty collection
             }
@@ -131,7 +132,7 @@ class ProductManagerController extends Controller
                 'tax_rate'      => $data['tax_rate'] ?? null,
             ]);
 
-            if(class_exists(\admin\product_inventories\Models\ProductInventory::class)){ 
+            if(Product::isModuleInstalled('product_inventories')){ 
                 // 3. Create inventory
                 $product->inventory()->create([
                     'product_id'         => $product->id,
@@ -195,11 +196,11 @@ class ProductManagerController extends Controller
             $relations = ['categories', 'images', 'prices', 'shipping'];
 
             // only add tags if the relation exists
-            if (class_exists(\admin\tags\Models\Tag::class)) {
+            if (Product::isModuleInstalled('tags')) {
                 $relations[] = 'tags';
             }
 
-            if(class_exists(\admin\product_inventories\Models\ProductInventory::class)) {
+            if(Product::isModuleInstalled('product_inventories')) {
                 $relations[] = 'inventory';
             }
 
@@ -225,11 +226,11 @@ class ProductManagerController extends Controller
             $relations = ['prices', 'shipping', 'seo', 'images'];
 
             // Load tags only if the relation exists
-            if (class_exists(\admin\tags\Models\Tag::class)) {
+            if (Product::isModuleInstalled('tags')) {
                 $relations[] = 'tags';
             }
 
-            if(class_exists(\admin\product_inventories\Models\ProductInventory::class)) {
+            if(Product::isModuleInstalled('product_inventories')) {
                 $relations[] = 'inventory';
             }
 
@@ -257,8 +258,8 @@ class ProductManagerController extends Controller
             ->isActive()
             ->pluck('title', 'id');
             $brands = Brand::isActive()->pluck('name', 'id');
-            if (class_exists(\admin\tags\Models\Tag::class)) {
-                $tags = \admin\tags\Models\Tag::isActive()->pluck('name', 'id');
+            if (Product::isModuleInstalled('tags')) {
+                $tags = Tag::isActive()->pluck('name', 'id');
             }else {
                 $tags = collect(); // empty collection
             }
@@ -330,7 +331,7 @@ class ProductManagerController extends Controller
                 ]
             );
 
-            if(class_exists(\admin\product_inventories\Models\ProductInventory::class)){
+            if(Product::isModuleInstalled('product_inventories')){
                 // 3. Update inventory
                 $product->inventory()->updateOrCreate(
                     ['product_id' => $product->id],

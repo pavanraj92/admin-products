@@ -175,8 +175,37 @@ class PublishProductsModuleCommand extends Command
             );
 
             $content = str_replace(
+                'use admin\users\Models\User;',
+                'use Modules\\Users\\app\\Models\\User;',
+                $content
+            );
+
+            $content = str_replace(
+                'use admin\product_inventories\Models\ProductInventory;',
+                'use Modules\\Inventories\\app\\Models\\ProductInventory;',
+                $content
+            );
+
+            $content = str_replace(
+                'use admin\tags\Models\Tag;',
+                'use Modules\\Tags\\app\\Models\\Tag;',
+                $content
+            );
+
+            $content = str_replace(
+                'use admin\admin_auth\Models\Package;',
+                'use Modules\\AdminAuth\\app\\Models\\Package;',
+                $content
+            );
+
+            $content = str_replace(
                 'use admin\admin_auth\Traits\HasSeo;',
                 'use Modules\\AdminAuth\\app\\Traits\\HasSeo;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\admin_auth\Services\ImageService;',
+                'use Modules\\AdminAuth\\app\\Services\\ImageService;',
                 $content
             );
            
@@ -203,6 +232,17 @@ class PublishProductsModuleCommand extends Command
             $content = str_replace(
                 'use admin\users\Models\User;',
                 'use Modules\\Users\\app\\Models\\User;',
+                $content
+            );
+            $content = str_replace(
+                'use admin\product_inventories\Models\ProductInventory;',
+                'use Modules\\Inventories\\app\\Models\\ProductInventory;',
+                $content
+            );
+
+            $content = str_replace(
+                'use admin\tags\Models\Tag;',
+                'use Modules\\Tags\\app\\Models\\Tag;',
                 $content
             );
         }

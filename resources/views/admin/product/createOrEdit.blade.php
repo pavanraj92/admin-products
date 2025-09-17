@@ -151,7 +151,7 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                            @if (class_exists(\admin\tags\Models\Tag::class))
+                                            @if (admin\products\Models\Product::isModuleInstalled('tags'))
                                                 <div class="col-md-12 pt-3">
                                                     <label for="tag_ids" class="form-label">Tags</label>
                                                     <select name="tag_ids[]" id="tag_ids" class="form-class select2"
@@ -184,7 +184,7 @@
 
                                 <!-- Pricing & Inventory -->
                                 <div class="card mb-4" style="box-shadow: 0 4px 20px rgba(0, 123, 255, 0.15);">
-                                    <h4 class="p-3 text-uppercase">Pricing @if (class_exists(\admin\product_inventories\Models\ProductInventory::class))
+                                    <h4 class="p-3 text-uppercase">Pricing @if (admin\products\Models\Product::isModuleInstalled('product_inventories'))
                                             & Inventory
                                         @endif
                                     </h4>
@@ -258,7 +258,7 @@
                                                 @enderror
                                             </div>
                                         </div>
-                                        @if (class_exists(\admin\product_inventories\Models\ProductInventory::class))
+                                        @if (admin\products\Models\Product::isModuleInstalled('product_inventories'))
                                             @include('inventory::admin.createOrEdit', [
                                                 'product' => $product ?? null,
                                             ])
