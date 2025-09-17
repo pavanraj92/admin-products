@@ -9,11 +9,14 @@ use admin\users\Models\User;
 use admin\products\Models\ProductImage;
 use admin\products\Models\ProductPrice;
 use admin\products\Models\ProductShipping;
+use admin\product_inventories\Models\ProductInventory;
+use admin\tags\Models\Tag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use Kyslik\ColumnSortable\Sortable;
+use Illuminate\Support\Facades\DB;
 
 class Product extends Model
 {
@@ -73,8 +76,8 @@ class Product extends Model
 
     public function inventory()
     {
-        if (class_exists(\admin\product_inventories\Models\ProductInventory::class)) {
-            return $this->hasOne(\admin\product_inventories\Models\ProductInventory::class);
+        if (self::isModuleInstalled('product_inventories')) {
+            return $this->hasOne(ProductInventory::class);
         }
     }
 
@@ -97,8 +100,8 @@ class Product extends Model
 
     public function tags()
     {
-        if (class_exists(\admin\tags\Models\Tag::class)) {
-            return $this->belongsToMany(\admin\tags\Models\Tag::class, 'product_tags');
+        if (self::isModuleInstalled('tags')) {
+            return $this->belongsToMany(Tag::class, 'product_tags');
         }
     }
 
@@ -154,5 +157,13 @@ class Product extends Model
     {
         return $this->hasOne(Seo::class, 'model_record_id')
             ->where('model_name', 'Product');
+    }
+
+    public static function isModuleInstalled($moduleName)
+    {
+        return DB::table('packages')
+            ->where('name', $moduleName)
+            ->where('is_installed', 1)
+            ->exists();
     }
 }

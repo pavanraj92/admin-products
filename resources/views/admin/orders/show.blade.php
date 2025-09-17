@@ -158,7 +158,7 @@
                                         <div class="form-group">
                                             <label class="font-weight-bold">User Name:</label>
                                             <p>
-                                                @if (class_exists(\admin\users\Models\User::class))
+                                                @if (admin\products\Models\Product::isModuleInstalled('users'))
                                                     {{ $order->userWithTrashed?->full_name ?? 'N/A' }}
                                                 @else
                                                     N/A
@@ -168,7 +168,7 @@
                                         <div class="form-group">
                                             <label class="font-weight-bold">User Email:</label>
                                             <p>
-                                                @if (class_exists(\admin\users\Models\User::class))
+                                                @if (admin\products\Models\Product::isModuleInstalled('users'))
                                                     {{ $order->userWithTrashed?->email ?? 'N/A' }}
                                                 @else
                                                     N/A
@@ -178,7 +178,7 @@
                                         <div class="form-group">
                                             <label class="font-weight-bold">User Phone:</label>
                                             <p>
-                                                @if (class_exists(\admin\users\Models\User::class))
+                                                @if (admin\products\Models\Product::isModuleInstalled('users'))
                                                     {{ $order->userWithTrashed?->mobile ?? 'N/A' }}
                                                 @else
                                                     N/A
@@ -195,7 +195,7 @@
                                         <div class="form-group">
                                             <label class="font-weight-bold">Seller Name:</label>
                                             <p>
-                                                @if (class_exists(\admin\users\Models\User::class))
+                                                @if (admin\products\Models\Product::isModuleInstalled('users'))
                                                     {{ $order->sellerWithTrashed?->full_name ?? 'N/A' }}
                                                 @else
                                                     N/A
@@ -205,7 +205,7 @@
                                         <div class="form-group">
                                             <label class="font-weight-bold">Seller Email:</label>
                                             <p>
-                                                @if (class_exists(\admin\users\Models\User::class))
+                                                @if (admin\products\Models\Product::isModuleInstalled('users'))
                                                     {{ $order->sellerWithTrashed?->email ?? 'N/A' }}
                                                 @else
                                                     N/A
@@ -215,7 +215,7 @@
                                         <div class="form-group">
                                             <label class="font-weight-bold">Seller Phone:</label>
                                             <p>
-                                                @if (class_exists(\admin\users\Models\User::class))
+                                                @if (admin\products\Models\Product::isModuleInstalled('users'))
                                                     {{ $order->sellerWithTrashed?->mobile ?? 'N/A' }}
                                                 @else
                                                     N/A

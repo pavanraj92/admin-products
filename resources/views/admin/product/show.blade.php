@@ -42,7 +42,7 @@
                                                 <div class="form-group">
                                                     <label class="font-weight-bold">Seller Name:</label>
                                                     <p>
-                                                        @if (class_exists(\admin\users\Models\User::class))
+                                                        @if (admin\products\Models\Product::isModuleInstalled('users'))
                                                             {{ $product->seller?->full_name ?? ($product->seller?->name ?? 'N/A') }}
                                                         @else
                                                             N/A
@@ -102,7 +102,7 @@
                                                     <p>{{ $product->brand?->name ?? 'N/A' }}</p>
                                                 </div>
                                             </div>
-                                            @if (class_exists(\admin\tags\Models\Tag::class))
+                                            @if (admin\products\Models\Product::isModuleInstalled('tags'))
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label class="font-weight-bold">Tags:</label>
@@ -122,7 +122,7 @@
 
                                 <div class="card mt-3">
                                     <div class="card-header bg-primary">
-                                        <h5 class="mb-0 text-white font-bold">Pricing  @if(class_exists(\admin\product_inventories\Models\ProductInventory::class))& Inventory @endif</h5>
+                                        <h5 class="mb-0 text-white font-bold">Pricing  @if(admin\products\Models\Product::isModuleInstalled('product_inventories'))& Inventory @endif</h5>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
